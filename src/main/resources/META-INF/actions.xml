@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:soapui-actions xmlns:tns="http://eviware.com/soapui/config">
+
+<tns:action id="ImportRamlAction" actionClass="com.smartbear.soapui.raml.ImportRamlAction"/>
+
+<tns:actionGroup id="EnabledWsdlProjectActions">
+   <tns:actionMapping actionId="ImportRamlAction" position="AFTER" positionRef="AddWadlAction"/>
+</tns:actionGroup>
+
+</tns:soapui-actions>
