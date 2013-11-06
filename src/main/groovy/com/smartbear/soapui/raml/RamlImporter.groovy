@@ -46,7 +46,6 @@ class RamlImporter {
     private final WsdlProject project
     private String defaultMediaType
     private String defaultMediaTypeExtension
-    private String defaultVersion
     private def baseUriParams = [:]
     private def resourceTypes = [:]
     private def traits = [:]
@@ -66,6 +65,8 @@ class RamlImporter {
         def service = createRestService( raml )
 
         baseUriParams = extractUriParams( raml.baseUri, raml.baseUriParameters )
+        if( baseUriParams.version != null )
+            baseUriParams.version.default = raml.version
 
         // extract default media type
         if( raml.mediaType != null )
@@ -77,8 +78,6 @@ class RamlImporter {
             if( defaultMediaTypeExtension.contains( '-'))
                 defaultMediaTypeExtension = defaultMediaTypeExtension.substring( defaultMediaTypeExtension.lastIndexOf( '-' )+1 )
         }
-
-        defaultVersion = raml.version
 
         raml.resourceTypes?.each{
             it.each{
@@ -142,9 +141,6 @@ class RamlImporter {
         def resource = service.addNewResource( getResourceName( it ), it.key )
         initResource( resource, it, it.value.is )
 
-        if( resource.params.version != null )
-            resource.params.version.defaultValue = defaultVersion
-
         def traits = it.value.is
         it.value.each {
             if( it.key.startsWith( '/'))
@@ -171,6 +167,9 @@ class RamlImporter {
         def traits = it.value.is == null ? resourceTraits : it.value.is + resourceTraits
 
         initResource( childResource, it, traits )
+
+        if( baseUriParams.version != null )
+            childResource.params.removeProperty( "version")
 
         it.value.each {
             if( it.key.startsWith( '/'))
@@ -354,6 +353,10 @@ class RamlImporter {
 
         uriParameters?.each{
             uriParams[it.key] = it.value
+        }
+
+        uriParams.each{
+           it.value.required = true
         }
 
         return uriParams

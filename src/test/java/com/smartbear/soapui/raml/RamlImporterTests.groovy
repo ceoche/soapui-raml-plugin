@@ -12,12 +12,37 @@ import static org.junit.Assert.assertTrue
 
 class RamlImporterTests extends GroovyTestCase{
 
-    public void testRaml()
+    public void testBitlyRaml()
+    {
+        def service = importRaml( "bitly.raml" )
+
+        assertEquals( "bit.ly API", service.name);
+        assertEquals( "https://api-ssl.bitly.com", service.endpoints[0])
+        assertEquals( "/{version}", service.basePath )
+        assertFalse( service.resourceList.empty )
+
+
+        def res = service.resources["/expand"]
+        assertNotNull( res )
+        assertTrue( res.params.hasProperty("version"))
+        assertEquals( RestParamsPropertyHolder.ParameterStyle.TEMPLATE, res.getParams().getProperty("version").style  )
+        assertEquals( "v3", res.params.version.defaultValue )
+        assertTrue( res.params.version.required )
+
+    }
+
+    def importRaml( def path )
     {
         WsdlProject project = new WsdlProject()
         RamlImporter importer = new RamlImporter( project )
 
-        def service = importer.importRaml( new File( "src/test/resources/twitter-short.raml").toURI().toURL().toString());
+        return importer.importRaml( new File( "src/test/resources/" + path ).toURI().toURL().toString());
+    }
+
+    public void testTwitterRaml()
+    {
+        def service = importRaml("twitter-short.raml");
+
         assertEquals( "Twitter API", service.name);
         assertEquals( "https://api.twitter.com", service.endpoints[0])
         assertEquals( "/{version}", service.basePath )
@@ -35,6 +60,9 @@ class RamlImporterTests extends GroovyTestCase{
         assertTrue( res.getParams().hasProperty("mediaTypeExtension"))
         assertEquals( RestParamsPropertyHolder.ParameterStyle.TEMPLATE, res.getParams().getProperty("mediaTypeExtension").style  )
         assertEquals( ".json", res.getParams().getProperty("mediaTypeExtension").defaultValue )
+
+        // version should only be defined on root resources
+        assertFalse( res.params.hasProperty("version"))
 
         def method = res.getRestMethodByName( "get")
         assertNotNull( method )
