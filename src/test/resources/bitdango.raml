@@ -1,0 +1,134 @@
+
+#%RAML 0.8
+version: v1
+baseUri: https://bitdango.com/api/{version}
+title: Bitdango API v1
+mediaType:  application/json
+protocols: [ HTTPS ]
+/market/{code}:
+  get:
+/exchange/{code}:
+  get:
+/currency/{code}:
+  get:
+/currencypair/{code}:
+  get:
+/country/{code}:
+  get:
+/markets:
+  get:
+    queryParameters:
+      page:
+        type: integer
+        default: 1
+      pageSize:
+        type: integer
+        default: 10
+      include:
+        type: string
+        default:
+        example: ticker, orderBook, tickerHistory, resultsCount, facets
+      markets:
+        type: string
+        default:
+        example: mtgoxBTCUSD, btceLTCUSD
+      exchanges:
+        type: string
+        default:
+        example: coinbase, mtgox
+      baseCurrencies:
+        type: string
+        default:
+        example: BTC, LTC
+      quoteCurrencies:
+        type: string
+        default:
+        example: USD, EUR
+      currencyPairs:
+        type: string
+        default:
+        example: BTCLTC, LTCEUR
+/exchanges:
+  get:
+    queryParameters:
+      page:
+        type: integer
+        default: 1
+      pageSize:
+        type: integer
+        default: 10
+      include:
+        type: string
+        default:
+        example: limits, credentials, transferPolicies, markets, resultsCount, facets
+      exchanges:
+        type: string
+        default:
+        example: coinbase, mtgox
+      countries:
+        type: string
+        default:
+        example: AU, DE, US
+/currencies:
+  get:
+    queryParameters:
+      page:
+        type: integer
+        default: 1
+      pageSize:
+        type: integer
+        default: 10
+      include:
+        type: string
+        default:
+        example: resultsCount, facets
+      currencies:
+        type: string
+        default:
+        example: EUR, BTC, SEK, LTC, USD
+      currencyTypes:
+        type: string
+        default:
+        example: digital, fiat
+/currencypairs:
+  get:
+    queryParameters:
+      page:
+        type: integer
+        default: 1
+      pageSize:
+        type: integer
+        default: 10
+      include:
+        type: string
+        default:
+        example: exchangeRateHistory, resultsCount
+      baseCurrencies:
+        type: string
+        default:
+        example: BTC, LTC
+      quoteCurrencies:
+        type: string
+        default:
+        example: USD, EUR
+      currencyPairs:
+        type: string
+        default:
+        example: BTCUSD, LTCEUR
+/countries:
+  get:
+    queryParameters:
+      page:
+        type: integer
+        default: 1
+      pageSize:
+        type: integer
+        default: 10
+      include:
+        type: string
+        default:
+        example: resultsCount
+      countries:
+        type: string
+        default:
+        example: AU, DE, US

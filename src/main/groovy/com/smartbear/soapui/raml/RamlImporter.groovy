@@ -221,6 +221,11 @@ class RamlImporter {
     {
         def method = resource.addNewMethod( it.key )
         method.method = RequestMethod.valueOf( it.key.toUpperCase() )
+
+        // empty method?
+        if( it.value == "")
+            return;
+
         method.description = it.value.description
 
         addMethodParameters( method, it.value )

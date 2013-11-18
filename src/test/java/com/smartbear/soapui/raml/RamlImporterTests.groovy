@@ -21,13 +21,18 @@ class RamlImporterTests extends GroovyTestCase{
         assertEquals( "/{version}", service.basePath )
         assertFalse( service.resourceList.empty )
 
-
         def res = service.resources["/expand"]
         assertNotNull( res )
         assertTrue( res.params.hasProperty("version"))
         assertEquals( RestParamsPropertyHolder.ParameterStyle.TEMPLATE, res.getParams().getProperty("version").style  )
         assertEquals( "v3", res.params.version.defaultValue )
         assertTrue( res.params.version.required )
+    }
+
+    public void testBitDangoRaml()
+    {
+        def service = importRaml( "bitdango.raml" )
+
 
     }
 

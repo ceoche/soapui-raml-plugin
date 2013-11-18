@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.smartbear.soapui.raml;
+package com.smartbear.soapui.raml.actions;
 
 import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.impl.wsdl.WsdlProject;
@@ -27,6 +27,7 @@ import com.eviware.x.form.support.ADialogBuilder;
 import com.eviware.x.form.support.AField;
 import com.eviware.x.form.support.AField.AFieldType;
 import com.eviware.x.form.support.AForm;
+import com.smartbear.soapui.raml.RamlImporter;
 
 import java.io.File;
 
@@ -43,7 +44,7 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject>
 
 	public ImportRamlAction()
 	{
-		super( "Import RAML", "Imports a RAML definition into SoapUI" );
+		super( "Import RAML Definition", "Imports a RAML definition into SoapUI" );
 	}
 
 	public void perform( WsdlProject project, Object param )

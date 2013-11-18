@@ -1,0 +1,103 @@
+#%RAML 0.8
+title: APIhub API Directory API
+baseUri: http://api.apihub.com/{version}
+version: v1
+mediaType: application/json
+schemas:
+  - apis: |
+      { "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "description": "APIs",
+        "properties": {
+          "total": { "type": "number" },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id":  { "type": "string" },
+                "title":  { "type": "string" },
+                "description":  { "type": "string" },
+                "apihubPortal":  { "type": "string" },
+                "specs":  { 
+                  "type": "object",
+                  "properties": {
+                    "RAML": { 
+                      "type": "object",
+                      "properties": {
+                        "url": { "type": "string" }
+                      },
+                      "required": [ "url" ]
+                    },
+                    "swagger": { 
+                      "type": "object",
+                      "properties": {
+                        "url": { "type": "string" }
+                      },
+                      "required": [ "url" ]
+                    }
+                  }
+                }
+              },
+              "required": [ "id", "title", "description", "apihubPortal", "specs" ]
+            }
+          }
+        },
+        "required": [ "total", "items" ]
+      }
+traits:
+  - paged:
+      queryParameters:
+        start:
+          description: The index of the first item to return
+          type: integer
+          minimum: 1
+        count:
+          description: How many items to return
+          type: integer
+          minimum: 0
+          default: 100
+/apis:
+  get:
+    is: [ paged ]
+    queryParameters:
+      specFormat:
+        description: Filter to APIs that have a spec in the given format
+        enum: [ RAML, swagger ]
+      title:
+        description: Filter to APIs that have the given string in their title
+    responses:
+      200:
+        body:
+          schema: apis
+          example: |
+            {
+              "total": 2,
+              "items": [
+                {
+                  "id": "64533",
+                  "title": "bitly API",
+                  "description": "Welcome, developers and other interested parties! Here you will find our API documentation, best practices, code libraries, public data sets, and other goodies. If you're looking to shorten links, bundle links, or retrieve link-level or user-level analytics programmatically, you've come to the right place.",
+                  "apihubPortal": "http:\/\/staging.apihub.com\/bitly\/api\/bitly-api",
+                  "specs": {
+                    "RAML": {
+                      "url": "http:\/\/staging.apihub.com\/raml-spec\/64533"
+                    }
+                  }
+                },
+                {
+                  "id": "19201",
+                  "title": "Box API",
+                  "description": "The Box API enables customizable integration of the Box collaboration and file storage functions with third-party software. The Box API allows developers to build custom interfaces and workflows, access box event stream data, and deploy box as a content service. Box OneCloud enables mobile applications to use Box as a cloud file management and storage system and browser.",
+                  "apihubPortal": "http:\/\/staging.apihub.com\/box\/api\/box-api",
+                  "specs": {
+                    "RAML": {
+                      "url": "http:\/\/staging.apihub.com\/raml-spec\/19201"
+                    },
+                    "swagger": {
+                      "url": "http:\/\/staging.apihub.com\/apihub\/swagger-resources\/19201"
+                    }
+                  }
+                }
+              ]
+            }
