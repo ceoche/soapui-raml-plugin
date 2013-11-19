@@ -204,7 +204,7 @@
                 <version>2.4</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>src/assembly/plugin-assembly.xml</descriptor>
+                        <descriptor>src/assembly/dist-assembly.xml</descriptor>
                     </descriptors>
                 </configuration>
             </plugin>
