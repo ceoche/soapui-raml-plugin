@@ -1,5 +1,6 @@
 package com.smartbear.soapui.raml
 
+import com.eviware.soapui.impl.rest.RestRepresentation
 import com.eviware.soapui.impl.rest.RestRequestInterface
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder
 import com.eviware.soapui.impl.wsdl.WsdlProject
@@ -27,13 +28,30 @@ class RamlImporterTests extends GroovyTestCase{
         assertEquals( RestParamsPropertyHolder.ParameterStyle.TEMPLATE, res.getParams().getProperty("version").style  )
         assertEquals( "v3", res.params.version.defaultValue )
         assertTrue( res.params.version.required )
+
+        res = service.resources["/highvalue"]
+        assertNotNull( res )
+        def method = res.getRestMethodAt( 0 )
+        assertNotNull( method )
+        assertNotNull( method.params.limit )
+
+        assertNotNull( method.representations )
+        assertTrue( method.representations.length > 0 )
+
+        def reps = method.representations.findAll { it.status.contains( 200 ) }
+
+        assertEquals( 1, reps.size() )
+        assertEquals( "Successful request.", reps[0].description )
+
+        reps = method.representations.findAll { it.status.contains( 500 ) }
+
+        assertEquals( 1, reps.size() )
+        assertEquals( "Any other error.", reps[0].description )
     }
 
-    public void testBitDangoRaml()
+    public void testEmptyMethods()
     {
-        def service = importRaml( "bitdango.raml" )
-
-
+        importRaml( "bitdango.raml" )
     }
 
     def importRaml( def path )

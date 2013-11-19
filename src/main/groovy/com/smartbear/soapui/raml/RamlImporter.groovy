@@ -126,7 +126,7 @@ class RamlImporter {
             }
             catch( e )
             {
-                Console.println( "Error expanding include: " + e.message)
+              //  Console.println( "Error expanding include: " + e.message)
                 s = s.substring( 0, ix ) + s.substring(endIx)
             }
 
@@ -179,15 +179,16 @@ class RamlImporter {
         }
     }
 
-    def initResource(RestResource restResource, def res, def resourceTraits ) {
+    def initResource(RestResource resource, def res, def resourceTraits ) {
 
-        Console.println( "Initializing resource with path " + restResource.fullPath )
+        //Console.println( "Initializing resource with path " + restResource.fullPath )
 
-        restResource.description = res.value.description
+        if( resource.description != null )
+            resource.description = res.value.description
 
         if( res.key.contains(MEDIA_TYPE_EXTENSION) )
         {
-            RestParameter p = restResource.params.addProperty( "mediaTypeExtension" )
+            RestParameter p = resource.params.addProperty( "mediaTypeExtension" )
             p.style = ParameterStyle.TEMPLATE
             p.required = true
             p.defaultValue = "." + defaultMediaTypeExtension
@@ -196,50 +197,89 @@ class RamlImporter {
         def params = extractUriParams( res.key, res.value.uriParmeters )
         params.putAll( baseUriParams )
         params.each {
-            addParamFromNamedProperty( restResource.params, ParameterStyle.TEMPLATE, it )
+            addParamFromNamedProperty( resource.params, ParameterStyle.TEMPLATE, it )
         }
 
         res.value.each {
-            if( Arrays.asList(RequestMethod.methodsAsStringArray).contains( it.key.toUpperCase() ))
-                addMethod( restResource, it, resourceTraits )
+
+            def key = it.key
+            def optional = key.endsWith( '?')
+
+            if( optional )
+                key = key.substring( 0, key.length()-1 )
+
+            if( Arrays.asList(RequestMethod.methodsAsStringArray).contains( key.toUpperCase() ))
+            {
+                def method = resource.getRestMethodByName( key )
+                if( method == null && !optional )
+                {
+                    method = resource.addNewMethod( key )
+                    method.method = RequestMethod.valueOf( key.toUpperCase() )
+                }
+
+                if( method != null )
+                    initMethod( it, method, resourceTraits )
+            }
         }
 
         if( res.value.type != null && resourceTypes.containsKey( res.value.type ))
-            applyResourceType( restResource, resourceTypes[res.value.type])
+            applyResourceType( resource, resourceTypes[res.value.type])
     }
 
-    def applyResourceType( def resource, def type )
+    def applyResourceType( RestResource resource, def type )
     {
-       type.value.each{
-           def option
+       type.each{
+           def key = it.key
+           def optional = key.endsWith( '?')
 
+           if( optional )
+               key = key.substring( 0, key.length()-1 )
+
+           if( key.startsWith( '/'))
+           {
+               def name = getResourceName( it )
+               def child = resource.getChildResourceByName( name )
+               if( child == null && !optional )
+               {
+                   child = resource.addNewChildResource( name, key )
+               }
+
+               if( child != null )
+                   initResource( child, it.value, null )
+           }
+           else if( Arrays.asList(RequestMethod.methodsAsStringArray).contains( key.toUpperCase() ))
+           {
+               def method = resource.getRestMethodByName( key )
+               if( method == null && !optional )
+               {
+                   method = resource.addNewMethod( key )
+                   method.method = RequestMethod.valueOf( key.toUpperCase() )
+               }
+
+               if( method != null )
+                   initMethod( it, method, null )
+           }
 
        }
     }
 
-    def addMethod( RestResource resource, def it, def resourceTraits )
-    {
-        def method = resource.addNewMethod( it.key )
-        method.method = RequestMethod.valueOf( it.key.toUpperCase() )
+    public void initMethod(it, RestMethod method, resourceTraits) {
 
-        // empty method?
-        if( it.value == "")
-            return;
+        if( it.value == "" )
+            return
 
-        method.description = it.value.description
+        if( method.description != null )
+            method.description = it.value.description
 
-        addMethodParameters( method, it.value )
+        addMethodParameters(method, it.value)
 
-        if( it.value.body != null )
-            addBody( method, it.value.body )
+        if (it.value.body != null)
+            addBody(method, it.value.body)
 
-        addResponses( method, it.value )
-
+        addResponses(method, it.value)
         applyTraits(it, method, resourceTraits)
 
-        method.addNewRequest( "Request 1" )
-
-        Console.println( "Added method: " + method.method )
+        method.addNewRequest("Request 1")
     }
 
     def applyTraits(it, method, resourceTraits) {
@@ -285,9 +325,20 @@ class RamlImporter {
 
     private addParamFromNamedProperty( def params, def style, def prop )
     {
-        def param = params.getProperty( prop.key )
+        def key = prop.key
+        def optional = key.endsWith( '?')
+
+        if( optional )
+            key = key.substring( 0, key.length()-1 )
+
+        def param = params.getProperty( key )
         if( param == null )
-            param = params.addProperty( prop.key )
+        {
+            if( optional )
+                return
+
+            param = params.addProperty( key )
+        }
 
         param.style = style
         try {
@@ -324,11 +375,27 @@ class RamlImporter {
     private addResponses( RestMethod method, def raml )
     {
         raml.responses?.each{
-            def representation = method.addNewRepresentation(
-                 Integer.parseInt(it.key) < 400 ? RestRepresentation.Type.RESPONSE : RestRepresentation.Type.FAULT )
 
-            representation.status = [it.key]
-            representation.description = it.value.description
+            def key = it.key
+            def optional = key.endsWith( '?')
+            if( optional )
+                key = key.substring( 0, key.length()-1 )
+
+            def representation = method.representations.find { r -> r.status.contains( Integer.parseInt( key ))}
+
+            if( representation == null )
+            {
+                if( optional )
+                    return;
+
+                representation = method.addNewRepresentation(
+                    Integer.parseInt(key) < 400 ? RestRepresentation.Type.RESPONSE : RestRepresentation.Type.FAULT )
+
+                representation.status = [key]
+            }
+
+            if( representation.description == null )
+                representation.description = it.value.description
         }
     }
 
