@@ -1,6 +1,5 @@
 package com.smartbear.soapui.raml
 
-import com.eviware.soapui.impl.rest.RestRepresentation
 import com.eviware.soapui.impl.rest.RestRequestInterface
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder
 import com.eviware.soapui.impl.wsdl.WsdlProject
@@ -51,7 +50,11 @@ class RamlImporterTests extends GroovyTestCase{
 
     public void testEmptyMethods()
     {
-        importRaml( "bitdango.raml" )
+        def service = importRaml( "bitdango.raml" )
+
+        service.allResources.each {
+            Console.println it.fullPath
+        }
     }
 
     def importRaml( def path )

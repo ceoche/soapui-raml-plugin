@@ -197,7 +197,14 @@ class RamlImporter {
         def params = extractUriParams( res.key, res.value.uriParmeters )
         params.putAll( baseUriParams )
         params.each {
-            addParamFromNamedProperty( resource.params, ParameterStyle.TEMPLATE, it )
+            def p = addParamFromNamedProperty( resource.params, ParameterStyle.TEMPLATE, it )
+
+            // workaround for bug in SoapUI 4.6.X
+            if( p.style == ParameterStyle.TEMPLATE &&
+                resource.service.basePath.contains( "{" + p.name + "}"))
+            {
+                resource.path = resource.path.replaceAll( "\\{" + p.name + "\\}", "")
+            }
         }
 
         res.value.each {
@@ -323,7 +330,7 @@ class RamlImporter {
         }
     }
 
-    private addParamFromNamedProperty( def params, def style, def prop )
+    private RestParameter addParamFromNamedProperty( def params, def style, def prop )
     {
         def key = prop.key
         def optional = key.endsWith( '?')
@@ -370,6 +377,8 @@ class RamlImporter {
         {
             Console.println( "Failed to init param " + prop )
         }
+
+        return param
     }
 
     private addResponses( RestMethod method, def raml )
