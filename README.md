@@ -8,6 +8,7 @@
 
 Unzip this and the swagger plugin zips into the SoapUI/bin folder, this will place files in the underlying folders as follows:
 
+```
 /soapui
    /bin
       /ext
@@ -17,7 +18,7 @@ Unzip this and the swagger plugin zips into the SoapUI/bin folder, this will pla
       /plugins
          soapui-raml-plugin-0.1-plugin.jar  (from the raml plugin)
          Soapui-swagger-plugin-0.3-plugin.jar (from the swagger plugin)
-
+```
 
 (Re)Start SoapUI and create an empty project, you should have the following menu option on the project-popup menu:
 - Import RAML Definition
