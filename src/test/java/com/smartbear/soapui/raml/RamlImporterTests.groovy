@@ -53,7 +53,7 @@ class RamlImporterTests extends GroovyTestCase{
         def service = importRaml( "bitdango.raml" )
 
         service.allResources.each {
-            Console.println it.fullPath
+            //Console.println it.fullPath
         }
     }
 
@@ -107,5 +107,24 @@ class RamlImporterTests extends GroovyTestCase{
         assertEquals( 6, method.params.getProperty( "include_entities").options.length)
         assertTrue( method.params.getProperty( "include_entities").options.contains( "true"))
         assertTrue( method.params.hasProperty( "trim_user"))
+    }
+
+    public void testRamlWithParameters()
+    {
+        def service = importRaml("ramlwithparameters.raml");
+
+        def resource = service.getResourceByFullPath( "/books")
+        assertNotNull( resource )
+
+        def method = resource.getRestMethodByName( "get" )
+        assertNotNull( method )
+        assertNotNull( method.params.getProperty( "numPages"))
+        assertEquals( "The number of pages to return, not to exceed 10", method.params.numPages.description )
+        assertNotNull( method.params.getProperty( "access_token"))
+        assertEquals( "A valid access_token is required in get", method.params.access_token.description )
+
+        assertNotNull( method.params.title )
+        assertEquals( method.params.title.description, "Return books that have their title matching the given value")
+
     }
 }
