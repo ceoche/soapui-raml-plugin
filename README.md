@@ -32,11 +32,11 @@ Clone the Git repository, make sure you have maven installed, and run
 mvn clean install assembly:single
 ```
 
-to get the same zip as found on [https://sourceforge.net/projects/soapui-plugins/files/soapui-raml-plugin/](sourceforge)
+to get the same zip as found on [sourceforge](https://sourceforge.net/projects/soapui-plugins/files/soapui-raml-plugin/)
 
 ### Features and shortcomings
 
-The RAML importer supports most constructs in the [http://raml.org/spec.html](RAML 0.8 specification), including
+The RAML importer supports most constructs in the [RAML 0.8 specification](http://raml.org/spec.html), including
 parameterized traits and resourceTypes, !include statements, child resources, query/header/form/uri parameters,
 example requests bodies, etc.
 
