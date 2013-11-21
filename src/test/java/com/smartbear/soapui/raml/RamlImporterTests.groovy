@@ -48,12 +48,14 @@ class RamlImporterTests extends GroovyTestCase{
         assertEquals( "Any other error.", reps[0].description )
     }
 
-    public void testEmptyMethods()
+    public void testAllRamls()
     {
-        def service = importRaml( "bitdango.raml" )
-
-        service.allResources.each {
-            //Console.println it.fullPath
+        new File( "src/test/resources").eachFile {
+            if( it.name.endsWith( ".raml"))
+            {
+                Console.println( "Importing $it.name" )
+                importRaml( it.name )
+            }
         }
     }
 
@@ -125,6 +127,5 @@ class RamlImporterTests extends GroovyTestCase{
 
         assertNotNull( method.params.title )
         assertEquals( method.params.title.description, "Return books that have their title matching the given value")
-
     }
 }

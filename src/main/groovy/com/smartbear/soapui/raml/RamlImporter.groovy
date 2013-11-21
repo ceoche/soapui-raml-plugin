@@ -314,7 +314,8 @@ class RamlImporter {
         addResponses(method, it.value, parameters)
         applyTraits(it, method, resourceTraits )
 
-        method.addNewRequest("Request 1")
+        if( method.requestCount == 0 )
+            method.addNewRequest("Request 1")
     }
 
     def applyTraits(obj, RestMethod method, resourceTraits ) {
@@ -331,7 +332,7 @@ class RamlImporter {
         obj.value.is?.each {
 
             if ( it instanceof String && traits[it] != null) {
-                addMethodParameters(method, traits[it], null, parameters )
+                addMethodParameters(method, traits[it], parameters )
             }
             else if( it instanceof Map )
             {
@@ -379,9 +380,16 @@ class RamlImporter {
             if( rep.mediaType.equals( "application/x-www-form-urlencoded") ||
                 rep.mediaType.equals( "multipart/form-data"))
             {
-                it.value.formParameters.each{
+                it.value.formParameters?.each{
                     addParamFromNamedProperty( method.params, ParameterStyle.QUERY, it, parameters )
                 }
+            }
+
+            if( it.value instanceof Map && it.value.example != null )
+            {
+                def request = method.addNewRequest( "Sample Request" )
+                request.mediaType = it.key
+                request.requestContent = it.value.example
             }
         }
     }
