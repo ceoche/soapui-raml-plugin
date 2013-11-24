@@ -22,6 +22,9 @@ import com.eviware.soapui.impl.wsdl.support.PathUtils;
 import com.eviware.soapui.support.StringUtils;
 import com.eviware.soapui.support.UISupport;
 import com.eviware.soapui.support.action.support.AbstractSoapUIAction;
+import com.eviware.x.dialogs.Worker;
+import com.eviware.x.dialogs.XProgressDialog;
+import com.eviware.x.dialogs.XProgressMonitor;
 import com.eviware.x.form.XFormDialog;
 import com.eviware.x.form.support.ADialogBuilder;
 import com.eviware.x.form.support.AField;
@@ -47,7 +50,7 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject>
 		super( "Import RAML Definition", "Imports a RAML definition into SoapUI" );
 	}
 
-	public void perform( WsdlProject project, Object param )
+	public void perform( final WsdlProject project, Object param )
 	{
 		// initialize form
 		if( dialog == null )
@@ -75,11 +78,19 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject>
 					if( new File( expUrl ).exists() )
 						expUrl = new File( expUrl ).toURI().toURL().toString();
 
-					// create the importer and import!
-					RamlImporter importer = new RamlImporter( project );
+                    XProgressDialog dlg = UISupport.getDialogs().createProgressDialog("Importing API", 0, "", false);
+                    final String finalExpUrl = expUrl;
+                    dlg.run(new Worker.WorkerAdapter() {
+                        public Object construct(XProgressMonitor monitor) {
+                            // create the importer and import!
+                            RamlImporter importer = new RamlImporter( project );
 
-                    RestService restService = importer.importRaml(expUrl);
-				    UISupport.select( restService );
+                            RestService restService = importer.importRaml(finalExpUrl);
+                            UISupport.select(restService);
+
+                            return restService;
+                        }
+                    });
 
 					break;
 				}

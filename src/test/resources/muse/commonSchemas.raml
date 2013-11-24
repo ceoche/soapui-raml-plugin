@@ -1,0 +1,58 @@
+- presentation: |
+    {  "$schema": "http://json-schema.org/draft-03/schema",
+       "type": "object",
+       "description": "A product presentation",
+       "properties": {
+         "id":  { "type": "string" },
+         "title":  { "type": "string" },
+         "description":  { "type": "string" },
+         "fileUrl":  { "type": "string" },
+         "productId":  { "type": "string" }
+       },
+       "required": [ "id", "title", "fileUrl", "productId" ]
+    }
+- presentations: |
+    {  "$schema": "http://json-schema.org/draft-03/schema",
+       "type": "array",
+       "description": "Multiple product presentations",
+       "items": {
+         "type": "object",
+         "properties": {
+           "id":  { "type": "string" },
+           "title":  { "type": "string" },
+           "description":  { "type": "string" },
+           "fileUrl":  { "type": "string" },
+           "productId":  { "type": "string" }
+         },
+         "required": [ "id", "title", "fileUrl", "productId" ]
+       }
+    }
+- product: |
+    {  "$schema": "http://json-schema.org/draft-03/schema",
+       "type": "object",
+       "description": "A product",
+       "properties": {
+         "id":  { "type": "string" },
+         "name":  { "type": "string" },
+         "description":  { "type": "string" },
+         "imageUrl":  { "type": "string" },
+         "region": { "type": "string" }
+       },
+       "required": [ "id", "name", "region" ]
+    }
+- products: |
+    {  "$schema": "http://json-schema.org/draft-03/schema",
+       "type": "array",
+       "description": "Multiple products",
+       "items": {
+         "type": "object",
+         "properties": {
+           "id":  { "type": "string" },
+           "name":  { "type": "string" },
+           "description":  { "type": "string" },
+           "imageUrl":  { "type": "string" },
+           "region":  { "type": "string" }
+         },
+         "required": [ "id", "name", "region" ]
+       }
+    }

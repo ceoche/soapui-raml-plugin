@@ -50,6 +50,10 @@ Currently ignored or not supported are:
 I've tested this with a number of RAML files (see src/test/resources and the RamlImporterTests),
 but I'm sure there are details I've missed - please let me know if you find anything strange or unexpected.
 
+### Release History
+
+- Version 0.1 - 2013-11-22 - Initial release
+
 ### Feedback is welcome!
 
 Please don't hesitate to comment here or get in touch on twitter; @olensmar

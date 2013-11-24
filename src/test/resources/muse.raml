@@ -1,0 +1,28 @@
+#%RAML 0.8
+title: "Muse: Mule Sales Enablement API"
+version: v1
+baseUri: http://raml-mock-staging.herokuapp.com/Pg/{version} # http://examples.ramlicio.us/muse
+schemas: !include muse/commonSchemas.raml
+resourceTypes: !include muse/commonTypes.raml
+traits: !include muse/commonTraits.raml
+/presentations: &presentations
+  type: { collection: { schema: presentation } }
+  is: [ secured ]
+  get:
+    queryParameters:
+      title:
+        description: Filter by title
+  /{presentationId}:
+    type: { member: { schema: presentation } }
+    is: [ secured ]
+/products:
+  type: { collection: { schema: product } }
+  is: [ secured ]
+  get:
+    queryParameters:
+      region:
+        description: Filter by region
+  /{productId}:
+    type: { member: { schema: product } }
+    is: [ secured ]
+    /presentations: *presentations

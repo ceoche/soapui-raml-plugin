@@ -59,6 +59,27 @@ class RamlImporterTests extends GroovyTestCase{
         }
     }
 
+    public void testComplexTypesAndTraits()
+    {
+        def service = importRaml( "muse.raml" )
+        def resource = service.getResourceByFullPath( "/Pg/{version}/products")
+
+        assertNotNull( resource )
+
+        def method = resource.getRestMethodByName( "delete" )
+        assertNull( method )
+
+        resource = service.getResourceByFullPath( "/Pg/{version}/products/{productId}")
+
+        assertNotNull( resource )
+
+        method = resource.getRestMethodByName( "delete" )
+        assertNotNull( method )
+
+        assertNotNull( method.representations.find { it.status.contains( 200 )} )
+        assertNotNull( method.representations.find { it.status.contains( 401 )} )
+    }
+
     def importRaml( def path )
     {
         WsdlProject project = new WsdlProject()
