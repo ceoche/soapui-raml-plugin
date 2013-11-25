@@ -30,6 +30,7 @@ import com.eviware.x.form.support.ADialogBuilder;
 import com.eviware.x.form.support.AField;
 import com.eviware.x.form.support.AField.AFieldType;
 import com.eviware.x.form.support.AForm;
+import com.smartbear.soapui.raml.NativeRamlImporter;
 import com.smartbear.soapui.raml.RamlImporter;
 
 import java.io.File;
@@ -83,7 +84,7 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject>
                     dlg.run(new Worker.WorkerAdapter() {
                         public Object construct(XProgressMonitor monitor) {
                             // create the importer and import!
-                            RamlImporter importer = new RamlImporter( project );
+                            NativeRamlImporter importer = new NativeRamlImporter( project );
 
                             RestService restService = importer.importRaml(finalExpUrl);
                             UISupport.select(restService);

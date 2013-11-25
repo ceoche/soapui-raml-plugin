@@ -8,7 +8,7 @@
 
     <groupId>com.smartbear</groupId>
     <artifactId>soapui-raml-plugin</artifactId>
-    <version>0.1-plugin</version>
+    <version>0.2-plugin</version>
 
     <repositories>
         <repository>
@@ -18,6 +18,12 @@
     </repositories>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-parser</artifactId>
+            <version>0.9-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>com.smartbear</groupId>

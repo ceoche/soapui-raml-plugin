@@ -13966,7 +13966,7 @@ traits:
             404:
               description: Pull request has not been merged.
         put:
-          description: Merge a pull request (Merge Button™)
+          description: Merge a pull request (Merge Buttonâ„¢)
           body:
             application/json:
               schema: |
