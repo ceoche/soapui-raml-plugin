@@ -16,6 +16,7 @@
 
 package com.smartbear.soapui.raml.actions;
 
+import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.impl.wsdl.WsdlProject;
 import com.eviware.soapui.impl.wsdl.support.PathUtils;
@@ -31,83 +32,78 @@ import com.eviware.x.form.support.AField;
 import com.eviware.x.form.support.AField.AFieldType;
 import com.eviware.x.form.support.AForm;
 import com.smartbear.soapui.raml.NativeRamlImporter;
-import com.smartbear.soapui.raml.RamlImporter;
 
 import java.io.File;
 
 /**
  * Shows a simple dialog for specifying the swagger definition and performs the
  * import
- * 
+ *
  * @author Ole Lensmar
  */
 
-public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject>
-{
+public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
     private XFormDialog dialog;
 
-	public ImportRamlAction()
-	{
-		super( "Import RAML Definition", "Imports a RAML definition into SoapUI" );
-	}
+    public ImportRamlAction() {
+        super("Import RAML Definition", "Imports a RAML definition into SoapUI");
+    }
 
-	public void perform( final WsdlProject project, Object param )
-	{
-		// initialize form
-		if( dialog == null )
-		{
-			dialog = ADialogBuilder.buildDialog( Form.class );
-		}
-        else
-        {
-            dialog.setValue( Form.RAML_URL, "" );
+    public void perform(final WsdlProject project, Object param) {
+        // initialize form
+        if (dialog == null) {
+            dialog = ADialogBuilder.buildDialog(Form.class);
+        } else {
+            dialog.setValue(Form.RAML_URL, "");
         }
 
 
-		while( dialog.show() )
-		{
-			try
-			{
-				// get the specified URL
-				String url = dialog.getValue( Form.RAML_URL).trim();
-				if( StringUtils.hasContent( url ) )
-				{
-					// expand any property-expansions
-					String expUrl = PathUtils.expandPath( url, project );
+        while (dialog.show()) {
+            try {
+                // get the specified URL
+                String url = dialog.getValue(Form.RAML_URL).trim();
+                if (StringUtils.hasContent(url)) {
+                    // expand any property-expansions
+                    String expUrl = PathUtils.expandPath(url, project);
 
-					// if this is a file - convert it to a file URL
-					if( new File( expUrl ).exists() )
-						expUrl = new File( expUrl ).toURI().toURL().toString();
+                    // if this is a file - convert it to a file URL
+                    if (new File(expUrl).exists())
+                        expUrl = new File(expUrl).toURI().toURL().toString();
 
                     XProgressDialog dlg = UISupport.getDialogs().createProgressDialog("Importing API", 0, "", false);
                     final String finalExpUrl = expUrl;
                     dlg.run(new Worker.WorkerAdapter() {
                         public Object construct(XProgressMonitor monitor) {
-                            // create the importer and import!
-                            NativeRamlImporter importer = new NativeRamlImporter( project );
 
-                            RestService restService = importer.importRaml(finalExpUrl);
-                            UISupport.select(restService);
+                            try {
+                                // create the importer and import!
+                                NativeRamlImporter importer = new NativeRamlImporter(project);
+                                SoapUI.log( "Importing RAML from [" + finalExpUrl + "]");
 
-                            return restService;
+                                RestService restService = importer.importRaml(finalExpUrl);
+                                UISupport.select(restService);
+
+                                return restService;
+                            } catch (Exception e) {
+                                SoapUI.logError(e);
+                            }
+
+                            return null;
                         }
                     });
 
-					break;
-				}
-			}
-			catch( Exception ex )
-			{
-				UISupport.showErrorMessage( ex );
-			}
-		}
-	}
+                    break;
+                }
+            } catch (Exception ex) {
+                UISupport.showErrorMessage(ex);
+            }
+        }
+    }
 
-	@AForm( name = "Add RAML Definition", description = "Creates a REST API from the specified RAML definition" )
-	public interface Form
-	{
-        @AField( name = "RAML Definition", description = "Location or URL of RAML definition", type = AFieldType.FILE )
-		public final static String RAML_URL = "RAML Definition";
-	}
+    @AForm(name = "Add RAML Definition", description = "Creates a REST API from the specified RAML definition")
+    public interface Form {
+        @AField(name = "RAML Definition", description = "Location or URL of RAML definition", type = AFieldType.FILE)
+        public final static String RAML_URL = "RAML Definition";
+    }
 
 }

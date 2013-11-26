@@ -9,7 +9,8 @@
             <unpack>false</unpack>
             <outputDirectory>/ext</outputDirectory>
             <includes>
-                <include>com.esotericsoftware.yamlbeans:yamlbeans</include>
+                <include>org.raml:raml-parser</include>
+                <include>org.yaml:snakeyaml</include>
             </includes>
         </dependencySet>
         <dependencySet>

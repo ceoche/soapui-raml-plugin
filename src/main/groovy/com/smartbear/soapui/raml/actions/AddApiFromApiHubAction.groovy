@@ -91,6 +91,7 @@ class AddApiFromApiHubAction extends AbstractSoapUIAction<WsdlProject> {
                 try {
                     // create the importer and import!
                     NativeRamlImporter importer = new NativeRamlImporter( project );
+                    SoapUI.log( "Importing RAML from [" + api.specs.RAML.url + "]")
 
                     RestService restService = importer.importRaml(api.specs.RAML.url);
                     UISupport.select( restService );
@@ -104,6 +105,8 @@ class AddApiFromApiHubAction extends AbstractSoapUIAction<WsdlProject> {
             {
                 try {
                     SwaggerImporter importer = new SwaggerImporter( project );
+                    SoapUI.log( "Importing Swagger from [" + api.specs.swagger.url + "]")
+
                     def result = importer.importSwagger( api.specs.swagger.url )
 
                     if( result.length > 0 )

@@ -53,7 +53,6 @@ class NativeRamlImporter {
     }
 
     public RestService importRaml(String url) {
-
         Raml raml = new RamlDocumentBuilder().build( new URL(url).openStream() );
 
         def service = createRestService(raml)
