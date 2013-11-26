@@ -4,6 +4,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+    <name>SoapUI RAML plugin</name>
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.smartbear</groupId>
@@ -221,5 +223,13 @@
         </plugins>
 
     </build>
-    <name>SoapUI RAML plugin</name>
+
+    <scm>
+        <connection>scm:git:git://github.com:olensmar/soapui-raml-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:olensmar/soapui-raml-plugin.git</developerConnection>
+        <url>http://github.com/olensmar/soapui-raml-plugin</url>
+        <tag>HEAD</tag>
+    </scm>
+
+
 </project>
