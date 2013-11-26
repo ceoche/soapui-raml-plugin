@@ -151,11 +151,11 @@ class RamlImporterTests extends GroovyTestCase{
         def method = resource.getRestMethodByName( "get" )
         assertNotNull( method )
         assertNotNull( method.params.getProperty( "numPages"))
-//        assertEquals( "The number of pages to return, not to exceed 10", method.params.numPages.description )
+        assertEquals( "The number of pages to return, not to exceed 10", method.params.numPages.description )
         assertNotNull( method.params.getProperty( "access_token"))
-//        assertEquals( "A valid access_token is required in get", method.params.access_token.description )
+        assertEquals( "A valid access_token is required in get", method.params.access_token.description )
 
         assertNotNull( method.params.title )
-//        assertEquals( method.params.title.description, "Return books that have their title matching the given value")
+        assertEquals( method.params.title.description, "Return books that have their title matching the given value")
     }
 }
