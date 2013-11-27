@@ -36,8 +36,7 @@ import com.smartbear.soapui.raml.NativeRamlImporter;
 import java.io.File;
 
 /**
- * Shows a simple dialog for specifying the swagger definition and performs the
- * import
+ * Shows a simple dialog for importing a RAML definition
  *
  * @author Ole Lensmar
  */

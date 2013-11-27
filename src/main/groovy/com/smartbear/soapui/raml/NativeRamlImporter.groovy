@@ -35,7 +35,7 @@ import org.raml.model.parameter.UriParameter
 import org.raml.parser.visitor.RamlDocumentBuilder
 
 /**
- * A simple RAML importer
+ * A simple RAML importer that uses the raml-java-parser
  *
  * @author Ole Lensmar
  */

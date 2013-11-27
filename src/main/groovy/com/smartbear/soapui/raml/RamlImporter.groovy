@@ -26,7 +26,8 @@ import com.eviware.soapui.impl.wsdl.WsdlProject
 import org.apache.xmlbeans.*
 
 /**
- * A simple RAML importer
+ * A simple RAML importer - should eventually be removed since the NativeRamlImporter is
+ * used instead (this one was used in version 0.1)
  *
  * @author Ole Lensmar
  */
