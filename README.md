@@ -12,11 +12,12 @@ Unzip this and the swagger plugin zips into the SoapUI/bin folder, this will pla
 /soapui
    /bin
       /ext
-         yamlbeans-1.06.jar (from the raml plugin)
+         snakeyaml-1.13.jar (from the raml plugin)
+         raml-parser-0.9-SNAPSHOT.jar (from the raml plugin)
          swagger4j-1.0-beta2.jar  (from the swagger plugin)
          Javax.json.1.0-b06.jar  (from the swagger plugin)
       /plugins
-         soapui-raml-plugin-0.1-plugin.jar  (from the raml plugin)
+         soapui-raml-plugin-0.2-plugin.jar  (from the raml plugin)
          soapui-swagger-plugin-0.3-plugin.jar (from the swagger plugin)
 ```
 
@@ -40,9 +41,8 @@ The RAML importer supports most constructs in the [RAML 0.8 specification](http:
 parameterized traits and resourceTypes, !include statements, child resources, query/header/form/uri parameters,
 example requests bodies, etc.
 
-Currently ignored or not supported are:
+Currently ignored are:
 - security declarations - mainly because SoapUI doesn't support OAuth yet
-- parameter value transformations (!singularize and !pluralize), these are ignored
 - protocols - not sure how that would be mapped to SoapUI where you can add as many endpoints as needed
 - schemas - the SoapUI API doesn't make them easy to add programmatically, and it only supports XML Schema for now
 - response example bodies - there are no corresponding objects in SoapUI
@@ -52,6 +52,7 @@ but I'm sure there are details I've missed - please let me know if you find anyt
 
 ### Release History
 
+- Version 0.2 - 2013-11-27 - Update to use [raml-java-parser](https://github.com/raml-org/raml-java-parser) instead of own raml parser
 - Version 0.1 - 2013-11-22 - Initial release
 
 ### Feedback is welcome!
