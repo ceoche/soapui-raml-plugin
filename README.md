@@ -2,11 +2,12 @@
 
 - Allows you to import RAML files into SoapUI for testing your REST APIs
 - Allows you to browse the ApiHub directory for APIs with either RAML or Swagger definitions (Swagger requires the
-  soapui-swagger-plugin to be installed also)
+  [soapui-swagger-plugin](https://github.com/olensmar/soapui-swagger-plugin) to be installed also)
 
 ### Usage
 
-Unzip this and the swagger plugin zips into the SoapUI/bin folder, this will place files in the underlying folders as follows:
+The plugins are available at [sourceforge](https://sourceforge.net/projects/soapui-plugins/files/soapui-raml-plugin/) -
+download and unzip them into the SoapUI/bin folder, this will place files in the underlying folders as follows:
 
 ```
 /soapui
