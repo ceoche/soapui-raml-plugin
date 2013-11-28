@@ -172,7 +172,21 @@ class NativeRamlImporter {
             addResponses(method, action.responses )
 
         if (method.requestCount == 0)
-            method.addNewRequest("Request 1")
+        {
+            initDefaultRequest( method.addNewRequest("Request 1"))
+        }
+    }
+
+    RestRequest initDefaultRequest(RestRequest request)
+    {
+        if( defaultMediaType != null )
+        {
+            def headers = request.requestHeaders
+            headers.Accept = [defaultMediaType]
+            request.requestHeaders = headers
+        }
+
+        return request
     }
 
     private addRequestBody(RestMethod method, Map body) {
@@ -191,7 +205,7 @@ class NativeRamlImporter {
             }
 
             if (mt.example != null) {
-                def request = method.addNewRequest("Sample Request")
+                def request = initDefaultRequest( method.addNewRequest("Sample Request"))
                 request.mediaType = mt.type
                 request.requestContent = mt.example
             }
