@@ -7,7 +7,8 @@
 ### Usage
 
 The plugins are available at [sourceforge](https://sourceforge.net/projects/soapui-plugins/files/soapui-raml-plugin/) -
-download and unzip them into the SoapUI/bin folder, this will place files in the underlying folders as follows:
+download and unzip them into the SoapUI/bin folder, this will place files in the underlying folders as follows
+(be sure to remove any previous versions of these files):
 
 ```
 /soapui
@@ -22,7 +23,7 @@ download and unzip them into the SoapUI/bin folder, this will place files in the
          soapui-swagger-plugin-0.3-plugin.jar (from the swagger plugin)
 ```
 
-(Re)Start SoapUI and create an empty project, you should have the following menu option on the project-popup menu:
+(Re)Start SoapUI and create an empty project, you should have the following menu options on the project-popup menu:
 - Import RAML Definition; prompts to import a RAML file
 - Add API from ApiHub; allows you to browse APIs at ApiHub and import them into SoapUI.
 
