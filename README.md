@@ -4,6 +4,8 @@
 - Allows you to browse the ApiHub directory for APIs with either RAML or Swagger definitions (Swagger requires the
   [soapui-swagger-plugin](https://github.com/olensmar/soapui-swagger-plugin) to be installed also)
 
+-> See the [blog-post](http://olensmar.blogspot.se/2013/12/a-raml-apihub-plugin-for-soapui.html) for a detailed overview.
+
 ### Usage
 
 The plugins are available at [sourceforge](https://sourceforge.net/projects/soapui-plugins/files/soapui-raml-plugin/) -
