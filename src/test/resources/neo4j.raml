@@ -1,0 +1,167 @@
+#%RAML 0.8
+title: Neo4j API
+version: 0.1
+protocols: [ HTTP, HTTPS ]
+baseUri: http://localhost:7474/db/data
+mediaType:  application/json
+/:
+  get:
+    description: Return the REST API resources
+    responses:
+      200:
+        body:
+          application/json: 
+/node:
+  post:
+    description: Create a Neo4j node
+    body:
+      application/json:
+        example: |
+          { "name": "Thomas Anderson",
+            "profession": "Hacker"
+          }
+    responses:
+      201:
+        description: OK, a node was created
+      400:
+        description: Invalid data sent
+  /{node_id}:
+    uriParameters:
+      node_id:
+        type: integer
+        required: true
+        example: 128
+    get:
+      description: Get a node in the database
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+        404:
+          description: Node not found
+    delete:
+      description: Delete node
+      responses:
+        204:
+          description: OK, no content returned
+        404:
+          description: Node not found
+        409:
+          description: Node could not be deleted (still has relationships?)
+    /properties:
+      get:
+        description: Get properties on node
+        responses:
+          200: 
+            description: OK
+            body:
+              application/json: 
+                example: |
+                  { "name": "Thomas Anderson",
+                    "profession": "Hacker"
+                  }              
+          204:
+            description: OK, no properties found
+          400:
+            description: Invalid data sent      
+      put:
+        description: Set properties on node
+        body:
+          application/json:
+            example: |
+              { "name": "Thomas Anderson",
+                "profession": "Hacker"
+              }
+        responses:
+          204:
+            description: OK, no content returned
+          400:
+            description: Invalid data sent      
+          404:
+            description: Node not found
+      delete:
+        description: Remove properties from node
+        responses:
+          204:
+            description: OK, no content returned
+          404:
+            description: Node not found/index
+      /{property}:
+        uriParameters:
+          property:
+            type: string
+            required: true
+            example: "name"
+        get:
+          description: Get property on node
+          responses:
+            200: 
+              description: OK
+              body:
+                application/json: 
+                  example: "the value"          
+            404:
+              description: Node or property not found      
+        put:
+          description: Set property on node
+          body:
+            application/json:
+              example: "the value"
+          responses:
+            204:
+              description: OK, no content returned
+            400:
+              description: Invalid data sent      
+        delete:
+          description: Remove property from node
+          responses:
+            204:
+              description: OK, no content returned
+            404:
+              description: Node or property not found      
+    /relationships:
+      put:
+        description: Create relationship
+        body:
+          application/json:
+            example: |
+              { 
+                "to": "http://localhost:7474/db/data/node/152",
+                "data": { "date", 1270559208258 },
+                "type": "KNOWS"
+              }
+        responses:
+          201:
+            description: OK, a relationship was created
+          400:
+            description: Invalid data sent
+          404: 
+            description: | 
+              "to" node, or node specified by the URI not foumnd
+      /{dir}/{type}:
+        uriParameters:
+          dir:
+            type: string
+            required: true
+            example: "all"
+            enum: [ "all", "in", "out" ]
+          type:
+            type: string
+            required: false
+            example: "KNOWS\\&LOVES"
+        get:
+          description: Get relationships on node
+/relationship/{property}:
+  get:
+/ext:
+  get:
+/relationship/types:
+  get:
+/batch:
+  get:
+/cypher:
+  get:
+/transaction:
+  get:
+  
