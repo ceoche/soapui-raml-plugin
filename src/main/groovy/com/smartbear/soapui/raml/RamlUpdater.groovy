@@ -28,7 +28,7 @@ import org.raml.model.parameter.UriParameter
 import org.raml.parser.visitor.RamlDocumentBuilder
 
 /**
- * A simple RAML updater that uses the raml-java-parser
+ * A simple RAML updater - this initial version only adds new resources/methods/parameters
  *
  * @author Ole Lensmar
  */
@@ -38,15 +38,22 @@ class RamlUpdater {
     private static final String MEDIA_TYPE_EXTENSION = "{mediaTypeExtension}"
     private final WsdlProject project
     private String defaultMediaType
-    private String defaultMediaTypeExtension
     private def baseUriParams = [:]
+    private boolean updateParameters
+    private UpdateInfo updateInfo;
 
     public RamlUpdater(WsdlProject project) {
         this.project = project
     }
 
-    public RestService updateFromRaml(RestService service, String url) {
+    public void setUpdateParameters( boolean updateParameters )
+    {
+        this.updateParameters = updateParameters
+    }
+
+    public synchronized UpdateInfo updateFromRaml(RestService service, String url) {
         Raml raml = new RamlDocumentBuilder().build(new URL(url).openStream());
+        updateInfo = new UpdateInfo( service );
 
         baseUriParams = extractUriParams(raml.baseUri, raml.baseUriParameters)
         if (baseUriParams.version != null)
@@ -55,27 +62,22 @@ class RamlUpdater {
         // extract default media type
         if (raml.mediaType != null) {
             defaultMediaType = raml.mediaType
-            defaultMediaTypeExtension = defaultMediaType
-            if (defaultMediaTypeExtension.contains('/'))
-                defaultMediaTypeExtension = defaultMediaTypeExtension.substring(defaultMediaTypeExtension.lastIndexOf('/') + 1)
-            if (defaultMediaTypeExtension.contains('-'))
-                defaultMediaTypeExtension = defaultMediaTypeExtension.substring(defaultMediaTypeExtension.lastIndexOf('-') + 1)
         }
-
 
         raml.resources.each {
             complementResource(service, it.key, it.value)
         }
 
-        return service
+        return updateInfo
     }
 
     def complementResource(RestService service, String path, Resource r) {
 
-        def resource = service.getResourceByFullPath(path)
+        def resource = service.resources[path]
         if (resource == null)
         {
             resource = service.addNewResource(getResourceName(r), path)
+            updateInfo.addedResources.add( resource )
         }
 
         initResource(resource, r)
@@ -103,26 +105,26 @@ class RamlUpdater {
         if( childResource == null )
         {
             childResource = resource.addNewChildResource(getResourceName(r), path)
+            updateInfo.addedResources.add( childResource )
         }
 
         initResource(childResource, r)
 
-        if (baseUriParams.version != null)
-            childResource.params.removeProperty("version")
-
         r.resources.each {
-            addChildResource(resource, it.key, it.value)
+            addChildResource(childResource, it.key, it.value)
         }
     }
 
     def findChildResource( RestResource resource, String path )
     {
+        def result = null
+
         resource.childResourceList.each {
             if( it.path == path )
-                return it
+                result = it
         }
 
-        return null
+        return result
     }
 
     def initResource(RestResource resource, Resource r) {
@@ -130,38 +132,37 @@ class RamlUpdater {
         if (resource.description == null)
             resource.description = r.description
 
-        if (r.uri.contains(MEDIA_TYPE_EXTENSION) && !resource.params.containsKey("mediaTypeExtension")) {
-            RestParameter p = resource.params.addProperty("mediaTypeExtension")
-            p.style = ParameterStyle.TEMPLATE
-            p.required = true
-            p.defaultValue = "." + defaultMediaTypeExtension
-        }
-
         def params = extractUriParams(r.uri, r.uriParameters)
-        params.putAll(baseUriParams)
         params.each {
-            def p = addParamFromNamedProperty(resource.params, ParameterStyle.TEMPLATE, it.key, it.value)
-
-            // workaround for bug in SoapUI 4.6.X
-            if (p.style == ParameterStyle.TEMPLATE &&
-                    resource.service.basePath.contains("{" + p.name + "}")) {
-                resource.path = resource.path.replaceAll("\\{" + p.name + "\\}", "")
-            }
+            addParamFromNamedProperty(resource.params, ParameterStyle.TEMPLATE, it.key, it.value)
         }
 
         r.actions.each {
 
             def key = it.key.toString()
-            if (Arrays.asList(RequestMethod.methodsAsStringArray).contains(key)) {
-                def method = resource.getRestMethodByName(key)
+            if (Arrays.asList(HttpMethod.methodsAsStringArray).contains(key)) {
+                def method = findRestMethod( resource, key )
                 if (method == null) {
                     method = resource.addNewMethod(key.toLowerCase())
-                    method.method = RequestMethod.valueOf(key.toUpperCase())
+                    method.method = HttpMethod.valueOf(key.toUpperCase())
+                    updateInfo.addedMethods.add( method )
                 }
 
                 initMethod(method, it.value)
             }
         }
+    }
+
+    RestMethod findRestMethod( RestResource resource, String verb )
+    {
+        RestMethod result = null
+
+        resource.restMethodList.each {
+            if( it.method.name().toLowerCase() == verb.toLowerCase())
+                result = it
+        }
+
+        return result
     }
 
     public void initMethod(RestMethod method, Action action) {
@@ -225,8 +226,18 @@ class RamlUpdater {
     private RestParameter addParamFromNamedProperty(def params, def style, def name, AbstractParam p) {
 
         RestParameter param = params.getProperty(name)
-        if (param == null)
+        if (param == null )
+        {
+            if( !updateParameters )
+                return param
+
             param = params.addProperty(name)
+            updateInfo.addedParameters.add( param )
+        }
+        else if( !updateParameters )
+        {
+            return param
+        }
 
         param.style = style
 
@@ -317,5 +328,19 @@ class RamlUpdater {
         }
 
         return uriParams
+    }
+
+    public static class UpdateInfo
+    {
+        RestService restService;
+
+        List<RestResource> addedResources = new ArrayList<RestResource>();
+        List<RestMethod> addedMethods = new ArrayList<RestMethod>();
+        List<RestParameter> addedParameters = new ArrayList<RestParameter>();
+
+        public UpdateInfo( RestService service )
+        {
+            this.restService = service
+        }
     }
 }

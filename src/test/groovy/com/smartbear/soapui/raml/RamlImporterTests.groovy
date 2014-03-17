@@ -16,15 +16,10 @@
 
 package com.smartbear.soapui.raml
 
-import com.eviware.soapui.impl.rest.RestRequestInterface
+import com.eviware.soapui.impl.rest.HttpMethod
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder
 import com.eviware.soapui.impl.wsdl.WsdlProject
 import org.apache.xmlbeans.XmlString
-
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertTrue
 
 class RamlImporterTests extends GroovyTestCase{
 
@@ -96,7 +91,7 @@ class RamlImporterTests extends GroovyTestCase{
         assertNotNull( method.representations.find { it.status.contains( 401 )} )
     }
 
-    def importRaml( def path )
+    public static def importRaml( def path )
     {
         WsdlProject project = new WsdlProject()
         NativeRamlImporter importer = new NativeRamlImporter( project )
@@ -140,7 +135,7 @@ class RamlImporterTests extends GroovyTestCase{
 
         def method = res.getRestMethodByName( "get")
         assertNotNull( method )
-        assertEquals(RestRequestInterface.RequestMethod.GET, method.method)
+        assertEquals(HttpMethod.GET, method.method)
 
         assertTrue( method.params.hasProperty( "count"))
         assertTrue( method.params.hasProperty( "since_id"))

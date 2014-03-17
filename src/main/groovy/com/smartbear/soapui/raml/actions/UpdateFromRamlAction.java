@@ -34,6 +34,7 @@ import com.eviware.x.form.support.AForm;
 import com.smartbear.soapui.raml.NativeRamlImporter;
 import com.smartbear.soapui.raml.RamlUpdater;
 
+import java.awt.*;
 import java.io.File;
 
 /**
@@ -76,12 +77,19 @@ public class UpdateFromRamlAction extends AbstractSoapUIAction<RestService> {
                         public Object construct(XProgressMonitor monitor) {
 
                             try {
-                                // create the importer and import!
-                                RamlUpdater importer = new RamlUpdater(restService.getProject());
-                                SoapUI.log( "Importing RAML from [" + finalExpUrl + "]");
+                                // create the updater and import!
+                                RamlUpdater updater = new RamlUpdater(restService.getProject());
+                                updater.setUpdateParameters( dialog.getBooleanValue( Form.UPDATE_PARAMS ));
+                                SoapUI.log( "Updating RAML from [" + finalExpUrl + "]");
 
-                                RestService service = importer.updateFromRaml(restService,finalExpUrl);
-                                UISupport.select(service);
+                                RamlUpdater.UpdateInfo updateInfo = updater.updateFromRaml(restService,finalExpUrl);
+                                UISupport.select(updateInfo.getRestService());
+
+                                UISupport.showExtendedInfo(  "RAML Update", "The following was added from the specified RAML file",
+                                        "Added Resources: " + updateInfo.getAddedResources().size() + "<br/>" +
+                                        "Added Methods: " + updateInfo.getAddedMethods().size() + "<br/>" +
+                                        "Added Parameters: " + updateInfo.getAddedParameters().size(),
+                                        new Dimension( 300, 200 ));
 
                                 return restService;
                             } catch (Exception e) {
@@ -102,8 +110,12 @@ public class UpdateFromRamlAction extends AbstractSoapUIAction<RestService> {
 
     @AForm(name = "Update From RAML Definition", description = "Updates the selected REST API from the specified RAML definition")
     public interface Form {
+
         @AField(name = "RAML Definition", description = "Location or URL of RAML definition", type = AFieldType.FILE)
         public final static String RAML_URL = "RAML Definition";
+
+        @AField( name = "Update Parameters", description = "Will update and add new parameter definitions", type = AField.AFieldType.BOOLEAN )
+        public final static String UPDATE_PARAMS = "Update Parameters";
     }
 
 }
