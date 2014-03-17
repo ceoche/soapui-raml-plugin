@@ -2,6 +2,7 @@
 <tns:soapui-actions xmlns:tns="http://eviware.com/soapui/config">
 
     <tns:action id="ImportRamlAction" actionClass="com.smartbear.soapui.raml.actions.ImportRamlAction"/>
+    <tns:action id="UpdateFromRamlAction" actionClass="com.smartbear.soapui.raml.actions.UpdateFromRamlAction"/>
 
     <tns:action id="AddApiFromApiHubAction"
                 actionClass="com.smartbear.soapui.raml.actions.AddApiFromApiHubAction"/>
@@ -10,5 +11,10 @@
         <tns:actionMapping actionId="AddApiFromApiHubAction" position="AFTER" positionRef="AddWadlAction"/>
         <tns:actionMapping actionId="ImportRamlAction" position="AFTER" positionRef="AddWadlAction"/>
     </tns:actionGroup>
+
+    <tns:actionGroup id="RestServiceActions">
+        <tns:actionMapping actionId="UpdateFromRamlAction"/>
+    </tns:actionGroup>
+
 
 </tns:soapui-actions>

@@ -174,4 +174,18 @@ class RamlImporterTests extends GroovyTestCase{
         assertNotNull( method.params.title )
         assertEquals( method.params.title.description, "Return books that have their title matching the given value")
     }
+
+    public void testNeo4JRaml()
+    {
+        def service = importRaml("neo4j.raml")
+
+        def res = service.resources["/node"]
+        assertNotNull( res )
+
+        res = res.getChildResourceByName("/{node_id}")
+        assertNotNull( res )
+
+        res = res.getChildResourceByName("/relationships")
+        assertNotNull( res )
+    }
 }

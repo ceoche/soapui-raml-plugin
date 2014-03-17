@@ -28,7 +28,6 @@ import com.eviware.x.form.support.ADialogBuilder
 import com.smartbear.restplugin.SwaggerImporter
 import com.smartbear.soapui.apihub.ApiHubApi
 import com.smartbear.soapui.raml.NativeRamlImporter
-import com.smartbear.soapui.raml.RamlImporter
 
 import javax.swing.*
 import javax.swing.event.ListSelectionEvent

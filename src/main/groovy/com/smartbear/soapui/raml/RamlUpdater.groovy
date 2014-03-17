@@ -17,29 +17,23 @@
 package com.smartbear.soapui.raml
 
 import com.eviware.soapui.impl.rest.*
-import com.eviware.soapui.impl.rest.HttpMethod
 import com.eviware.soapui.impl.rest.support.RestParameter
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder.ParameterStyle
 import com.eviware.soapui.impl.rest.support.RestUtils
 import com.eviware.soapui.impl.wsdl.WsdlProject
 import org.apache.xmlbeans.*
-import org.raml.model.Action
-import org.raml.model.MimeType
-import org.raml.model.ParamType
-import org.raml.model.Raml
-import org.raml.model.Resource
-import org.raml.model.Response
+import org.raml.model.*
 import org.raml.model.parameter.AbstractParam
 import org.raml.model.parameter.UriParameter
 import org.raml.parser.visitor.RamlDocumentBuilder
 
 /**
- * A simple RAML importer that uses the raml-java-parser
+ * A simple RAML updater that uses the raml-java-parser
  *
  * @author Ole Lensmar
  */
 
-class NativeRamlImporter {
+class RamlUpdater {
 
     private static final String MEDIA_TYPE_EXTENSION = "{mediaTypeExtension}"
     private final WsdlProject project
@@ -47,14 +41,12 @@ class NativeRamlImporter {
     private String defaultMediaTypeExtension
     private def baseUriParams = [:]
 
-    public NativeRamlImporter(WsdlProject project) {
+    public RamlUpdater(WsdlProject project) {
         this.project = project
     }
 
-    public RestService importRaml(String url) {
-        Raml raml = new RamlDocumentBuilder().build( new URL(url).openStream() );
-
-        def service = createRestService(raml)
+    public RestService updateFromRaml(RestService service, String url) {
+        Raml raml = new RamlDocumentBuilder().build(new URL(url).openStream());
 
         baseUriParams = extractUriParams(raml.baseUri, raml.baseUriParameters)
         if (baseUriParams.version != null)
@@ -72,19 +64,24 @@ class NativeRamlImporter {
 
 
         raml.resources.each {
-            addResource(service, it.key, it.value)
+            complementResource(service, it.key, it.value)
         }
 
         return service
     }
 
-    def addResource(RestService service, String path, Resource r ) {
+    def complementResource(RestService service, String path, Resource r) {
 
-        def resource = service.addNewResource(getResourceName(r), path)
+        def resource = service.getResourceByFullPath(path)
+        if (resource == null)
+        {
+            resource = service.addNewResource(getResourceName(r), path)
+        }
+
         initResource(resource, r)
 
         r.resources.each {
-           addChildResource(resource, it.key, it.value)
+            addChildResource(resource, it.key, it.value)
         }
     }
 
@@ -101,34 +98,49 @@ class NativeRamlImporter {
     }
 
     def addChildResource(RestResource resource, String path, Resource r) {
-        def childResource = resource.addNewChildResource(getResourceName(r), path)
+
+        def childResource = findChildResource( resource, path )
+        if( childResource == null )
+        {
+            childResource = resource.addNewChildResource(getResourceName(r), path)
+        }
 
         initResource(childResource, r)
 
         if (baseUriParams.version != null)
             childResource.params.removeProperty("version")
 
-
         r.resources.each {
-            addChildResource(childResource, it.key, it.value)
+            addChildResource(resource, it.key, it.value)
         }
     }
 
-    def initResource(RestResource resource, Resource r ) {
+    def findChildResource( RestResource resource, String path )
+    {
+        resource.childResourceList.each {
+            if( it.path == path )
+                return it
+        }
 
-        resource.description = r.description
+        return null
+    }
 
-        if (r.uri.contains(MEDIA_TYPE_EXTENSION)) {
+    def initResource(RestResource resource, Resource r) {
+
+        if (resource.description == null)
+            resource.description = r.description
+
+        if (r.uri.contains(MEDIA_TYPE_EXTENSION) && !resource.params.containsKey("mediaTypeExtension")) {
             RestParameter p = resource.params.addProperty("mediaTypeExtension")
             p.style = ParameterStyle.TEMPLATE
             p.required = true
             p.defaultValue = "." + defaultMediaTypeExtension
         }
 
-        def params = extractUriParams(r.uri, r.uriParameters )
+        def params = extractUriParams(r.uri, r.uriParameters)
         params.putAll(baseUriParams)
         params.each {
-            def p = addParamFromNamedProperty(resource.params, ParameterStyle.TEMPLATE, it.key, it.value )
+            def p = addParamFromNamedProperty(resource.params, ParameterStyle.TEMPLATE, it.key, it.value)
 
             // workaround for bug in SoapUI 4.6.X
             if (p.style == ParameterStyle.TEMPLATE &&
@@ -140,19 +152,19 @@ class NativeRamlImporter {
         r.actions.each {
 
             def key = it.key.toString()
-            if (Arrays.asList(HttpMethod.methodsAsStringArray).contains(key)) {
+            if (Arrays.asList(RequestMethod.methodsAsStringArray).contains(key)) {
                 def method = resource.getRestMethodByName(key)
-                if (method == null ) {
+                if (method == null) {
                     method = resource.addNewMethod(key.toLowerCase())
-                    method.method = HttpMethod.valueOf(key.toUpperCase())
+                    method.method = RequestMethod.valueOf(key.toUpperCase())
                 }
 
-                initMethod(method, it.value )
+                initMethod(method, it.value)
             }
         }
     }
 
-    public void initMethod( RestMethod method, Action action ) {
+    public void initMethod(RestMethod method, Action action) {
 
         method.description = action.description
 
@@ -164,22 +176,19 @@ class NativeRamlImporter {
             addParamFromNamedProperty(method.params, ParameterStyle.HEADER, it.key, it.value)
         }
 
-        if( action.body != null )
+        if (action.body != null)
             addRequestBody(method, action.body)
 
-        if( action.responses != null)
-            addResponses(method, action.responses )
+        if (action.responses != null)
+            addResponses(method, action.responses)
 
-        if (method.requestCount == 0)
-        {
-            initDefaultRequest( method.addNewRequest("Request 1"))
+        if (method.requestCount == 0) {
+            initDefaultRequest(method.addNewRequest("Request 1"))
         }
     }
 
-    RestRequest initDefaultRequest(RestRequest request)
-    {
-        if( defaultMediaType != null )
-        {
+    RestRequest initDefaultRequest(RestRequest request) {
+        if (defaultMediaType != null) {
             def headers = request.requestHeaders
             headers.Accept = [defaultMediaType]
             request.requestHeaders = headers
@@ -190,7 +199,9 @@ class NativeRamlImporter {
 
     private addRequestBody(RestMethod method, Map body) {
         body.each {
-            def rep = method.addNewRepresentation(RestRepresentation.Type.REQUEST)
+            def reps = method.getRepresentations( RestRepresentation.Type.REQUEST, it.value.type )
+            def rep = ( reps != null && reps.length > 0 ) ? reps[0] : method.addNewRepresentation(RestRepresentation.Type.REQUEST)
+
             MimeType mt = it.value
             rep.mediaType = mt.type
 
@@ -198,40 +209,39 @@ class NativeRamlImporter {
                     rep.mediaType.equals("multipart/form-data")) {
                 mt.formParameters?.each {
                     def name = it.key
-                    if( it.value.size() > 0 )
+                    if (it.value.size() > 0)
                         addParamFromNamedProperty(method.params, ParameterStyle.QUERY, name, it.value.get(0))
                 }
             }
 
             if (mt.example != null) {
-                def request = initDefaultRequest( method.addNewRequest("Sample Request"))
+                def request = initDefaultRequest(method.addNewRequest("Sample Request"))
                 request.mediaType = mt.type
                 request.requestContent = mt.example
             }
         }
     }
 
-    private RestParameter addParamFromNamedProperty(def params, def style, def name, AbstractParam p ) {
+    private RestParameter addParamFromNamedProperty(def params, def style, def name, AbstractParam p) {
 
-        RestParameter param = params.getProperty( name )
-        if( param == null )
-           param = params.addProperty(name)
+        RestParameter param = params.getProperty(name)
+        if (param == null)
+            param = params.addProperty(name)
 
         param.style = style
 
-        if( param.description == null || param.description == "" )
+        if (param.description == null || param.description == "")
             param.description = p.description
 
-        if( param.defaultValue == null || param.defaultValue == "")
+        if (param.defaultValue == null || param.defaultValue == "")
             param.defaultValue = p.defaultValue
 
         param.required = p.required
 
-        if( param.options == null || param.options.length == 0 )
+        if (param.options == null || param.options.length == 0)
             param.options = p.enumeration
 
-        if( param.type == null )
-        {
+        if (param.type == null) {
             param.type = XmlString.type.name
 
             switch (p.type) {
@@ -251,40 +261,36 @@ class NativeRamlImporter {
             int statusCode = Integer.parseInt(it.key)
             Response r = it.value
 
-            if( r.body == null || r.body.isEmpty())
-            {
+            if (r.body == null || r.body.isEmpty()) {
                 def representation = method.representations.find {
-                    it.status.contains(statusCode)}
+                    it.status.contains(statusCode)
+                }
 
-                if (representation == null  ) {
+                if (representation == null) {
                     representation = method.addNewRepresentation(
                             statusCode < 400 ? RestRepresentation.Type.RESPONSE : RestRepresentation.Type.FAULT)
 
                     representation.status = [statusCode]
-                }
-                else if( !representation.status.contains( statusCode ))
-                {
+                } else if (!representation.status.contains(statusCode)) {
                     representation.status = representation.status + statusCode
                 }
 
                 representation.description = r.description
 
-            }
-            else r.body?.each {
+            } else r.body?.each {
                 MimeType mt = it.value
 
                 def representation = method.representations.find {
-                    it.status.contains(statusCode) && (mt.type == null || mt.type.equals(it.mediaType))}
+                    it.status.contains(statusCode) && (mt.type == null || mt.type.equals(it.mediaType))
+                }
 
-                if (representation == null  ) {
+                if (representation == null) {
                     representation = method.addNewRepresentation(
                             statusCode < 400 ? RestRepresentation.Type.RESPONSE : RestRepresentation.Type.FAULT)
 
                     representation.status = [statusCode]
                     representation.mediaType = mt.type
-                }
-                else if( !representation.status.contains( statusCode ))
-                {
+                } else if (!representation.status.contains(statusCode)) {
                     representation.status = representation.status + statusCode
                 }
 
@@ -293,25 +299,7 @@ class NativeRamlImporter {
         }
     }
 
-    private RestService createRestService(def raml) {
-        RestService restService = project.addNewInterface(raml.title, RestServiceFactory.REST_TYPE)
-
-        def path = raml.baseUri
-        if (path != null) {
-            if (path.endsWith("/"))
-                path = path.substring(0, path.length() - 1)
-
-            URL url = new URL(path)
-            def pathPos = path.length() - url.path.length()
-
-            restService.basePath = path.substring(pathPos)
-            restService.addEndpoint(path.substring(0, pathPos))
-        }
-
-        return restService
-    }
-
-    private Map extractUriParams(def path, def uriParameters) {
+    private static Map extractUriParams(def path, def uriParameters) {
         def uriParams = [:]
 
         RestUtils.extractTemplateParams(path).each {

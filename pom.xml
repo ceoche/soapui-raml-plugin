@@ -10,7 +10,7 @@
 
     <groupId>com.smartbear</groupId>
     <artifactId>soapui-raml-plugin</artifactId>
-    <version>0.2-plugin</version>
+    <version>0.3-plugin</version>
 
     <repositories>
         <repository>
@@ -45,11 +45,6 @@
             <version>2.0.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.esotericsoftware.yamlbeans</groupId>
-            <artifactId>yamlbeans</artifactId>
-            <version>1.06</version>
-        </dependency>
 
         <dependency>
             <groupId>org.glassfish</groupId>
@@ -60,7 +55,7 @@
         <dependency>
             <groupId>com.smartbear</groupId>
             <artifactId>swagger4j</artifactId>
-            <version>1.0-beta2</version>
+            <version>1.0-beta3</version>
         </dependency>
 
         <dependency>
@@ -80,7 +75,7 @@
         <dependency>
             <groupId>com.smartbear.soapui</groupId>
             <artifactId>soapui</artifactId>
-            <version>4.6.1</version>
+            <version>5.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>

@@ -1,0 +1,127 @@
+#%RAML 0.8
+title: Mythical Logistics Inc Shipping API
+version: 1.0
+baseUri: http://mythical.cloudhub.io/api/b2bshipping/{version}
+documentation: 
+  - title: Mythical Logistics Shipping Quote and Shipment API Documentation
+    content: Use this API to 1) get shipping quotes for your shipments from mobile or web apps 2) initiate shipment requests from quote (premium account holders must provide the corporate account number) and 3) track the status of a shipment
+mediaType: application/json
+/quote:
+  get:
+    description: Get a live quote for your shipment package. Mobile apps can use the 'current location' feature on the device to send the optional GPS co-ordinates. If GPS co-ordinates are used, the shipment 'origin' port is looked up based on proximity. 
+    queryParameters:
+      object:
+          displayName: Shipped object packaging
+          type: string
+          enum: ["Box", "Parcel", "Pallet", "Crate"]
+          description: The type of shipment - parcel/box/pallet/crate/etc
+          example: "Crate"
+          default: "Crate"
+          required: true
+      volume:
+          displayName: Volume in Cubic Feet
+          type: integer
+          description: Volume as length x width x height dimensions in feet
+          example: 120
+          required: true
+      weight:
+          displayName: Weight in pounds
+          type: integer
+          description: Total weight in pounds
+          example: 25
+          required: true
+      origin:
+          displayName: Originating port
+          type: string
+          description: The port of origin. Accepts 3-letter port code or full address. The latter will be used for auto-locating the nearest port.
+          example: "LAX"
+          default: "LAX"
+          required: false
+      coordinates:
+          displayName: GPS co-ordinates
+          type: string
+          description: Lat-Long GPS co-ordinates obtained from smart phones for intelligent pickup/dropoff/origin-port address lookup.
+          example: "40.714224,-73.961452"
+          required: false
+      destination:
+          displayName: Destination port
+          type: string
+          description: The port of final destination. Accepts 3 letter code or full address.
+          example: "DFW"
+          required: true
+      service:
+          displayName: Service Type
+          type: string
+          enum: ["Air", "PriorityAir", "Ground", "PriorityGround", "Ship"]
+          description: Type of Service - Air/Ground/Ship and Priority
+          example: "Ship"
+          default: "Ground"
+          required: true
+    responses:
+      200:
+        description: Quote amount and id. Quote ID can be used for a subsequent ship request
+        body:
+          application/json:
+              example: |
+                    {
+                      "quote_id": "quotWDv2VzHp",
+                      "created_at": "2013-04-22T05:40:57Z",
+                      "currency": "USD",
+                      "amount": 23.34
+                    }
+/shipment:
+  post:
+      description: Request a new shipment from quote
+      body:
+        application/json:
+          example: |  
+                    {
+                      "account_number": "102873635",
+                      "quote_id": "prclWDv2VzHp",
+                      "object": "Crate",
+                      "length": 20.2,
+                      "width": 10.9,
+                      "height": 5.0,
+                      "weight": 65.9,
+                      "destination": "LAX",
+                      "origin": "SFO",
+                      "service": "PriorityAir",
+                      "customs_declaration": "Mule Apparel",
+                      "customs_declared_value": 1232
+                    }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    {
+                      "shipment_id": "prclWDv2VzHp",
+                      "tracking_number": "34183941734713048",
+                      "created_at": "2013-04-22T05:40:57Z",
+                      "pickup_time": "2013-04-23T09:30:00Z"
+                      "scan_form": "sf_m4WmYiew"
+                    }
+  /{shipment_id}:
+    get:
+      description: Get shipment status and Tracking information
+      responses:
+        404:
+          description: unknown shipment
+        200:
+          body:
+            application/json:
+              example: |
+                    {
+                      "tracking_number": "34183941734713048",
+                      "created_at": "2013-04-22T05:40:57Z",
+                      "pickup_time": "2013-04-23T09:30:00Z",
+                      "status": "delivered",
+                      "scan_form": "sf_m4WmYiew"
+                    }
+     delete:
+      description: Delete an existing shipment
+      responses:
+        404:
+          description: unknown shipment
+        200:
+          description: shipment removed
