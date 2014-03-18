@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.smartbear</groupId>
             <artifactId>soapui-swagger-plugin</artifactId>
-            <version>0.3</version>
+            <version>0.3-plugin</version>
         </dependency>
 
         <dependency>

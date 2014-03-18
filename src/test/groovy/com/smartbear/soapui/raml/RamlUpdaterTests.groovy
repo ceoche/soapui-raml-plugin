@@ -13,6 +13,7 @@ class RamlUpdaterTests extends GroovyTestCase {
         def resource = service.getResourceByFullPath( "/api/b2bshipping/{version}/shipment/{shipment_id}")
         assertNotNull( resource )
         assertEquals( 1, resource.restMethodCount )
+        assertEquals( 1, resource.parentResource.restMethodList[0].requestCount )
 
         RamlUpdater updater = new RamlUpdater( service.project )
         updater.setUpdateParameters( true )
@@ -23,6 +24,7 @@ class RamlUpdaterTests extends GroovyTestCase {
         assertEquals( 1, info.addedResources.size())
         assertEquals( 2, info.addedMethods.size())
         assertEquals( service, info.restService )
+        assertEquals( 1, resource.parentResource.restMethodList[0].requestCount )
 
         // added resource at root level?
         assertEquals( 3, service.resourceList.size())

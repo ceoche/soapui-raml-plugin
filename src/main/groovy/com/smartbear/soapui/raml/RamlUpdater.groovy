@@ -215,7 +215,7 @@ class RamlUpdater {
                 }
             }
 
-            if (mt.example != null) {
+            if (mt.example != null && method.requestCount == 0 ) {
                 def request = initDefaultRequest(method.addNewRequest("Sample Request"))
                 request.mediaType = mt.type
                 request.requestContent = mt.example
