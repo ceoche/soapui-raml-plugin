@@ -18,6 +18,7 @@ package com.smartbear.soapui.raml
 
 import com.eviware.soapui.impl.rest.*
 import com.eviware.soapui.impl.rest.HttpMethod
+import com.eviware.soapui.impl.rest.mock.RestMockService
 import com.eviware.soapui.impl.rest.support.RestParameter
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder.ParameterStyle
 import com.eviware.soapui.impl.rest.support.RestUtils
@@ -46,9 +47,15 @@ class NativeRamlImporter {
     private String defaultMediaType
     private String defaultMediaTypeExtension
     private def baseUriParams = [:]
+    private RestMockService restMockService
 
     public NativeRamlImporter(WsdlProject project) {
         this.project = project
+    }
+
+    public void setRestMockService( RestMockService restMockService )
+    {
+        this.restMockService = restMockService
     }
 
     public RestService importRaml(String url) {
@@ -69,7 +76,6 @@ class NativeRamlImporter {
             if (defaultMediaTypeExtension.contains('-'))
                 defaultMediaTypeExtension = defaultMediaTypeExtension.substring(defaultMediaTypeExtension.lastIndexOf('-') + 1)
         }
-
 
         raml.resources.each {
             addResource(service, it.key, it.value)
@@ -251,47 +257,63 @@ class NativeRamlImporter {
             int statusCode = Integer.parseInt(it.key)
             Response r = it.value
 
-            if( r.body == null || r.body.isEmpty())
-            {
+            if (r.body == null || r.body.isEmpty()) {
                 def representation = method.representations.find {
-                    it.status.contains(statusCode)}
+                    it.status.contains(statusCode)
+                }
 
-                if (representation == null  ) {
+                if (representation == null) {
                     representation = method.addNewRepresentation(
                             statusCode < 400 ? RestRepresentation.Type.RESPONSE : RestRepresentation.Type.FAULT)
 
                     representation.status = [statusCode]
-                }
-                else if( !representation.status.contains( statusCode ))
-                {
+                } else if (!representation.status.contains(statusCode)) {
                     representation.status = representation.status + statusCode
                 }
 
                 representation.description = r.description
 
-            }
-            else r.body?.each {
+            } else r.body?.each {
                 MimeType mt = it.value
 
                 def representation = method.representations.find {
-                    it.status.contains(statusCode) && (mt.type == null || mt.type.equals(it.mediaType))}
+                    it.status.contains(statusCode) && (mt.type == null || mt.type.equals(it.mediaType))
+                }
 
-                if (representation == null  ) {
+                if (representation == null) {
                     representation = method.addNewRepresentation(
                             statusCode < 400 ? RestRepresentation.Type.RESPONSE : RestRepresentation.Type.FAULT)
 
                     representation.status = [statusCode]
                     representation.mediaType = mt.type
-                }
-                else if( !representation.status.contains( statusCode ))
-                {
+                } else if (!representation.status.contains(statusCode)) {
                     representation.status = representation.status + statusCode
                 }
 
                 representation.description = r.description
             }
         }
+
+        if (restMockService != null) {
+            def mockAction = restMockService.addEmptyMockAction(method.method, method.resource.getFullPath(true))
+
+            responses?.each {
+
+                int statusCode = Integer.parseInt(it.key)
+                Response r = it.value
+
+                r.body?.each {
+                    def mockResponse = mockAction.addNewMockResponse("Response " + statusCode)
+                    mockResponse.setContentType( it.value.type )
+
+                    if( it.value.example != null )
+                        mockResponse.responseContent = String.valueOf( it.value.example )
+                }
+            }
+
+        }
     }
+
 
     private RestService createRestService(def raml) {
         RestService restService = project.addNewInterface(raml.title, RestServiceFactory.REST_TYPE)

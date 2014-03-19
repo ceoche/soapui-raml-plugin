@@ -18,6 +18,7 @@ package com.smartbear.soapui.raml.actions
 
 import com.eviware.soapui.SoapUI
 import com.eviware.soapui.impl.rest.RestService
+import com.eviware.soapui.impl.rest.mock.RestMockService
 import com.eviware.soapui.impl.wsdl.WsdlProject
 import com.eviware.soapui.support.UISupport
 import com.eviware.soapui.support.action.support.AbstractSoapUIAction
@@ -112,7 +113,19 @@ class AddApiFromApiHubAction extends AbstractSoapUIAction<WsdlProject> {
                     NativeRamlImporter importer = new NativeRamlImporter( project );
                     SoapUI.log( "Importing RAML from [" + api.specs.RAML.url + "]")
 
+                    RestMockService mockService = null;
+
+                    if( dialog.getBooleanValue( AddApiFromApiHubForm.GENERATE_MOCK ))
+                    {
+                        mockService = project.addNewRestMockService( "Generated MockService" );
+                        importer.setRestMockService( mockService );
+                    }
+
                     RestService restService = importer.importRaml(api.specs.RAML.url);
+
+                    if( mockService != null )
+                        mockService.setName( restService.getName() + " MockService" );
+
                     UISupport.select( restService );
                 }
                 catch( Throwable e )

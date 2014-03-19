@@ -18,6 +18,7 @@ package com.smartbear.soapui.raml.actions;
 
 import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.impl.rest.RestService;
+import com.eviware.soapui.impl.rest.mock.RestMockService;
 import com.eviware.soapui.impl.wsdl.WsdlProject;
 import com.eviware.soapui.impl.wsdl.support.PathUtils;
 import com.eviware.soapui.support.StringUtils;
@@ -78,8 +79,19 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
                                 // create the importer and import!
                                 NativeRamlImporter importer = new NativeRamlImporter(project);
                                 SoapUI.log( "Importing RAML from [" + finalExpUrl + "]");
+                                RestMockService mockService = null;
+
+                                if( dialog.getBooleanValue( Form.GENERATE_MOCK ))
+                                {
+                                    mockService = project.addNewRestMockService( "Generated MockService" );
+                                    importer.setRestMockService( mockService );
+                                }
 
                                 RestService restService = importer.importRaml(finalExpUrl);
+
+                                if( mockService != null )
+                                    mockService.setName( restService.getName() + " MockService" );
+
                                 UISupport.select(restService);
 
                                 return restService;
@@ -103,6 +115,9 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
     public interface Form {
         @AField(name = "RAML Definition", description = "Location or URL of RAML definition", type = AFieldType.FILE)
         public final static String RAML_URL = "RAML Definition";
+
+        @AField( name = "Generate MockService", description = "Generate a REST Mock Service from the RAML definition", type = AField.AFieldType.BOOLEAN )
+        public final static String GENERATE_MOCK = "Generate MockService";
     }
 
 }
