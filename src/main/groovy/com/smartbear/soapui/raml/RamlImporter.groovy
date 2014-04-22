@@ -17,7 +17,6 @@
 package com.smartbear.soapui.raml
 
 import com.eviware.soapui.impl.rest.*
-import com.eviware.soapui.impl.rest.HttpMethod
 import com.eviware.soapui.impl.rest.mock.RestMockService
 import com.eviware.soapui.impl.rest.support.RestParameter
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder.ParameterStyle
@@ -40,7 +39,7 @@ import org.raml.parser.visitor.RamlDocumentBuilder
  * @author Ole Lensmar
  */
 
-class NativeRamlImporter {
+class RamlImporter {
 
     private static final String MEDIA_TYPE_EXTENSION = "{mediaTypeExtension}"
     private final WsdlProject project
@@ -49,7 +48,7 @@ class NativeRamlImporter {
     private def baseUriParams = [:]
     private RestMockService restMockService
 
-    public NativeRamlImporter(WsdlProject project) {
+    public RamlImporter(WsdlProject project) {
         this.project = project
     }
 
@@ -146,11 +145,11 @@ class NativeRamlImporter {
         r.actions.each {
 
             def key = it.key.toString()
-            if (Arrays.asList(HttpMethod.methodsAsStringArray).contains(key)) {
+            if (Arrays.asList(RestRequestInterface.HttpMethod.methodsAsStringArray).contains(key)) {
                 def method = resource.getRestMethodByName(key)
                 if (method == null ) {
                     method = resource.addNewMethod(key.toLowerCase())
-                    method.method = HttpMethod.valueOf(key.toUpperCase())
+                    method.method = RestRequestInterface.HttpMethod.valueOf(key.toUpperCase())
                 }
 
                 initMethod(method, it.value )
@@ -237,15 +236,13 @@ class NativeRamlImporter {
             param.options = p.enumeration
 
         if( param.type == null )
-        {
             param.type = XmlString.type.name
 
-            switch (p.type) {
-                case ParamType.NUMBER: param.type = XmlDouble.type.name; break;
-                case ParamType.INTEGER: param.type = XmlInteger.type.name; break;
-                case ParamType.DATE: param.type = XmlDate.type.name; break;
-                case ParamType.BOOLEAN: param.type = XmlBoolean.type.name; break;
-            }
+        switch (p.type) {
+            case ParamType.NUMBER: param.type = XmlDouble.type.name; break;
+            case ParamType.INTEGER: param.type = XmlInteger.type.name; break;
+            case ParamType.DATE: param.type = XmlDate.type.name; break;
+            case ParamType.BOOLEAN: param.type = XmlBoolean.type.name; break;
         }
 
         return param
@@ -295,7 +292,16 @@ class NativeRamlImporter {
         }
 
         if (restMockService != null) {
-            def mockAction = restMockService.addEmptyMockAction(method.method, method.resource.getFullPath(true))
+            def path = method.resource.getFullPath(true)
+            def params = method.overlayParams
+
+            params.each {
+                RestParameter p = it.value
+                if( p.style == ParameterStyle.TEMPLATE && p.defaultValue != null && p.defaultValue.trim().length() > 0 )
+                    path = path.replaceAll( "\\{" + it.key + "\\}", p.defaultValue )
+            }
+
+            def mockAction = restMockService.addEmptyMockAction(method.method, path)
 
             responses?.each {
 

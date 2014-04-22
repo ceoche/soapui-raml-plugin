@@ -140,11 +140,11 @@ class RamlUpdater {
         r.actions.each {
 
             def key = it.key.toString()
-            if (Arrays.asList(HttpMethod.methodsAsStringArray).contains(key)) {
+            if (Arrays.asList(RestRequestInterface.HttpMethod.methodsAsStringArray).contains(key)) {
                 def method = findRestMethod( resource, key )
                 if (method == null) {
                     method = resource.addNewMethod(key.toLowerCase())
-                    method.method = HttpMethod.valueOf(key.toUpperCase())
+                    method.method = RestRequestInterface.HttpMethod.valueOf(key.toUpperCase())
                     updateInfo.addedMethods.add( method )
                 }
 

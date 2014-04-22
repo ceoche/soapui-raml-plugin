@@ -32,7 +32,7 @@ import com.eviware.x.form.support.ADialogBuilder;
 import com.eviware.x.form.support.AField;
 import com.eviware.x.form.support.AField.AFieldType;
 import com.eviware.x.form.support.AForm;
-import com.smartbear.soapui.raml.NativeRamlImporter;
+import com.smartbear.soapui.raml.RamlImporter;
 
 import java.io.File;
 
@@ -77,7 +77,7 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
 
                             try {
                                 // create the importer and import!
-                                NativeRamlImporter importer = new NativeRamlImporter(project);
+                                RamlImporter importer = new RamlImporter(project);
                                 SoapUI.log( "Importing RAML from [" + finalExpUrl + "]");
                                 RestMockService mockService = null;
 

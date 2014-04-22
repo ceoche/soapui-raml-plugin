@@ -1,6 +1,7 @@
 #%RAML 0.8
 ---
 title: Example API
+baseUri: http://raml-mock-staging.herokuapp.com/{version}
 version: v1
 resourceTypes:
   - searchableCollection:
@@ -19,6 +20,8 @@ traits:
       queryParameters:
         numPages:
           description: The number of pages to return, not to exceed <<maxPages>>
+          type: integer
+
 /books:
   type: { searchableCollection: { queryParamName: title, fallbackParamName: digest_all_fields } }
   get:

@@ -16,9 +16,11 @@
 
 package com.smartbear.soapui.raml
 
-import com.eviware.soapui.impl.rest.HttpMethod
+import com.eviware.soapui.impl.rest.RestRequestInterface
+import com.eviware.soapui.impl.rest.mock.RestMockAction
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder
 import com.eviware.soapui.impl.wsdl.WsdlProject
+import org.apache.xmlbeans.XmlInteger
 import org.apache.xmlbeans.XmlString
 
 class RamlImporterTests extends GroovyTestCase{
@@ -94,7 +96,7 @@ class RamlImporterTests extends GroovyTestCase{
     public static def importRaml( def path )
     {
         WsdlProject project = new WsdlProject()
-        NativeRamlImporter importer = new NativeRamlImporter( project )
+        RamlImporter importer = new RamlImporter( project )
         importer.setRestMockService( project.addNewRestMockService( "TestRESTMock"))
 
         return importer.importRaml( new File( "src/test/resources/" + path ).toURI().toURL().toString());
@@ -136,7 +138,7 @@ class RamlImporterTests extends GroovyTestCase{
 
         def method = res.getRestMethodByName( "get")
         assertNotNull( method )
-        assertEquals(HttpMethod.GET, method.method)
+        assertEquals(RestRequestInterface.HttpMethod.GET, method.method)
 
         assertTrue( method.params.hasProperty( "count"))
         assertTrue( method.params.hasProperty( "since_id"))
@@ -157,18 +159,31 @@ class RamlImporterTests extends GroovyTestCase{
     {
         def service = importRaml("ramlwithparameters.raml");
 
-        def resource = service.getResourceByFullPath( "/books")
+        def resource = service.getResourceByFullPath( "/{version}/books")
         assertNotNull( resource )
+
+        def param = resource.params.getProperty( "version")
+        assertNotNull( param )
+        assertEquals( "version", param.name )
+        assertEquals( "v1", param.defaultValue)
 
         def method = resource.getRestMethodByName( "get" )
         assertNotNull( method )
         assertNotNull( method.params.getProperty( "numPages"))
+        assertEquals( XmlInteger.type.name, method.params.getProperty( "numPages").type )
         assertEquals( "The number of pages to return, not to exceed 10", method.params.numPages.description )
         assertNotNull( method.params.getProperty( "access_token"))
         assertEquals( "A valid access_token is required in get", method.params.access_token.description )
 
         assertNotNull( method.params.title )
         assertEquals( method.params.title.description, "Return books that have their title matching the given value")
+
+
+        def restMock = service.project.restMockServiceList[0]
+        RestMockAction action = restMock.mockOperationList[0]
+
+        assertEquals( "/v1/books", action.resourcePath )
+
     }
 
     public void testNeo4JRaml()

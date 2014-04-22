@@ -28,7 +28,7 @@ import com.eviware.x.form.XFormDialog
 import com.eviware.x.form.support.ADialogBuilder
 import com.smartbear.restplugin.SwaggerImporter
 import com.smartbear.soapui.apihub.ApiHubApi
-import com.smartbear.soapui.raml.NativeRamlImporter
+import com.smartbear.soapui.raml.RamlImporter
 
 import javax.swing.*
 import javax.swing.event.ListSelectionEvent
@@ -110,7 +110,7 @@ class AddApiFromApiHubAction extends AbstractSoapUIAction<WsdlProject> {
             {
                 try {
                     // create the importer and import!
-                    NativeRamlImporter importer = new NativeRamlImporter( project );
+                    RamlImporter importer = new RamlImporter( project );
                     SoapUI.log( "Importing RAML from [" + api.specs.RAML.url + "]")
 
                     RestMockService mockService = null;
