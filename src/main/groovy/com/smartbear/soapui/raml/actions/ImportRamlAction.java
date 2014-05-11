@@ -53,6 +53,7 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
         // initialize form
         if (dialog == null) {
             dialog = ADialogBuilder.buildDialog(Form.class);
+            dialog.setBooleanValue( Form.CREATE_REQUESTS, true );
         } else {
             dialog.setValue(Form.RAML_URL, "");
         }
@@ -78,7 +79,9 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
                             try {
                                 // create the importer and import!
                                 RamlImporter importer = new RamlImporter(project);
+                                importer.setCreateSampleRequests( dialog.getBooleanValue(Form.CREATE_REQUESTS));
                                 SoapUI.log( "Importing RAML from [" + finalExpUrl + "]");
+                                SoapUI.log( "CWD:" + new File(".").getCanonicalPath());
                                 RestMockService mockService = null;
 
                                 if( dialog.getBooleanValue( Form.GENERATE_MOCK ))
@@ -115,6 +118,9 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
     public interface Form {
         @AField(name = "RAML Definition", description = "Location or URL of RAML definition", type = AFieldType.FILE)
         public final static String RAML_URL = "RAML Definition";
+
+        @AField(name = "Create Requests", description = "Create sample requests for imported methods", type = AFieldType.BOOLEAN)
+        public final static String CREATE_REQUESTS = "Create Requests";
 
         @AField( name = "Generate MockService", description = "Generate a REST Mock Service from the RAML definition", type = AField.AFieldType.BOOLEAN )
         public final static String GENERATE_MOCK = "Generate MockService";

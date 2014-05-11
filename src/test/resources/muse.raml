@@ -22,6 +22,9 @@ traits: !include muse/commonTraits.raml
     queryParameters:
       region:
         description: Filter by region
+    body:
+      application/json:
+        schema: !include user.schema.json
   /{productId}:
     type: { member: { schema: product } }
     is: [ secured ]

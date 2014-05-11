@@ -47,6 +47,7 @@ class RamlImporter {
     private String defaultMediaTypeExtension
     private def baseUriParams = [:]
     private RestMockService restMockService
+    private boolean createSampleRequests
 
     public RamlImporter(WsdlProject project) {
         this.project = project
@@ -58,7 +59,17 @@ class RamlImporter {
     }
 
     public RestService importRaml(String url) {
-        Raml raml = new RamlDocumentBuilder().build( new URL(url).openStream() );
+
+        Raml raml;
+
+        if( url.toLowerCase().startsWith("file:"))
+        {
+            def parent = new File( url.substring(5)).getParentFile().toURI().toURL().toString()
+            raml = new RamlDocumentBuilder().build(new URL(url).openStream(), parent );
+        }
+        else {
+            raml = new RamlDocumentBuilder().build(new URL(url).openStream());
+        }
 
         def service = createRestService(raml)
 
@@ -175,7 +186,7 @@ class RamlImporter {
         if( action.responses != null)
             addResponses(method, action.responses )
 
-        if (method.requestCount == 0)
+        if (method.requestCount == 0 && createSampleRequests )
         {
             initDefaultRequest( method.addNewRequest("Request 1"))
         }
@@ -208,7 +219,7 @@ class RamlImporter {
                 }
             }
 
-            if (mt.example != null && method.requestCount == 0 ) {
+            if (mt.example != null && createSampleRequests ) {
                 def request = initDefaultRequest( method.addNewRequest("Sample Request"))
                 request.mediaType = mt.type
                 request.requestContent = mt.example
@@ -357,5 +368,10 @@ class RamlImporter {
         }
 
         return uriParams
+    }
+
+    public void setCreateSampleRequests ( boolean createSampleRequests )
+    {
+        this.createSampleRequests = createSampleRequests;
     }
 }

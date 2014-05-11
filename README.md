@@ -23,7 +23,7 @@ download and unzip them into the SoapUI/bin folder, this will place files in the
          swagger4j-1.0-beta3.jar  (from the swagger plugin)
          Javax.json.1.0-b06.jar  (from the swagger plugin)
       /plugins
-         soapui-raml-plugin-0.3-plugin.jar  (from the raml plugin)
+         soapui-raml-plugin-0.4-plugin.jar  (from the raml plugin)
          soapui-swagger-plugin-0.3-plugin.jar (from the swagger plugin)
 ```
 
@@ -59,9 +59,17 @@ but I'm sure there are details I've missed - please let me know if you find anyt
 
 ### Release History
 
-- Version 0.3 - 2014-04-22 - Bugfixes and new "Update from RAML Definition" action which adds new resources/methods/parameters to an existing REST Service in SoapUI from the specified RAML file. Also
-adds a "Generate Mock Service" option when Importing RAML definitions - which creates a SoapUI 5.0 REST Mock using sample response bodies if available.
-- Version 0.2 - 2013-11-27 - Update to use [raml-java-parser](https://github.com/raml-org/raml-java-parser) instead of own raml parser
+- Version 0.4 - 2014-05-12
+  - Added initial "Export RAML" functionality to REST Service popup menu
+  - Fixed import of RAML files containing relative includes and multiple request body examples.
+  - Added an option do the Import and Update dialogs to enable/disable creation of sample requests.
+  - Added separators to popup menus for better readability
+- Version 0.3 - 2014-04-22
+  - Bugfixes and new "Update from RAML Definition" action which adds new resources/methods/parameters to an existing REST Service in SoapUI
+  from the specified RAML file.
+  - Added "Generate Mock Service" option when Importing RAML definitions - which creates a SoapUI 5.0 REST Mock using sample response bodies if available.
+- Version 0.2 - 2013-11-27
+  - Update to use [raml-java-parser](https://github.com/raml-org/raml-java-parser) instead of own raml parser
 - Version 0.1 - 2013-11-22 - Initial release
 
 ### Feedback is welcome!

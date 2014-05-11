@@ -16,7 +16,9 @@
 
 package com.smartbear.soapui.raml
 
+import com.eviware.soapui.SoapUI
 import com.eviware.soapui.impl.rest.RestRequestInterface
+import com.eviware.soapui.impl.rest.RestService
 import com.eviware.soapui.impl.rest.mock.RestMockAction
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder
 import com.eviware.soapui.impl.wsdl.WsdlProject
@@ -67,7 +69,10 @@ class RamlImporterTests extends GroovyTestCase{
             if( it.name.endsWith( ".raml"))
             {
                 Console.println( "Importing $it.name" )
-                importRaml( it.name )
+                RestService service = importRaml( it.name )
+
+                RamlExporter exporter = new RamlExporter( service.project )
+                exporter.createRaml( it.name, service, service.getBasePath(), "v1" );
             }
         }
     }
@@ -99,7 +104,8 @@ class RamlImporterTests extends GroovyTestCase{
         RamlImporter importer = new RamlImporter( project )
         importer.setRestMockService( project.addNewRestMockService( "TestRESTMock"))
 
-        return importer.importRaml( new File( "src/test/resources/" + path ).toURI().toURL().toString());
+        String uri = new File( "src/test/resources/" + path ).toURI().toURL().toString();
+        return importer.importRaml( uri );
     }
 
     public void testBaseType()

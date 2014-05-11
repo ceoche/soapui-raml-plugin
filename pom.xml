@@ -10,7 +10,7 @@
 
     <groupId>com.smartbear</groupId>
     <artifactId>soapui-raml-plugin</artifactId>
-    <version>0.3-plugin</version>
+    <version>0.4-plugin</version>
 
     <repositories>
         <repository>
@@ -137,6 +137,11 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>com.btr</groupId>
+            <artifactId>proxy-vole</artifactId>
+            <version>20131209</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>4.1.1</version>
@@ -183,7 +188,7 @@
             </resource>
         </resources>
 
-        <testSourceDirectory>src/test/java</testSourceDirectory>
+        <testSourceDirectory>src/test/groovy</testSourceDirectory>
 
         <plugins>
             <plugin>

@@ -52,6 +52,7 @@ public class UpdateFromRamlAction extends AbstractSoapUIAction<RestService> {
         // initialize form
         if (dialog == null) {
             dialog = ADialogBuilder.buildDialog(Form.class);
+            dialog.setBooleanValue( Form.CREATE_REQUESTS, true );
         } else {
             dialog.setValue(Form.RAML_URL, "");
         }
@@ -77,6 +78,7 @@ public class UpdateFromRamlAction extends AbstractSoapUIAction<RestService> {
                             try {
                                 // create the updater and import!
                                 RamlUpdater updater = new RamlUpdater(restService.getProject());
+                                updater.setCreateSampleRequests( dialog.getBooleanValue( Form.CREATE_REQUESTS ));
                                 updater.setUpdateParameters( dialog.getBooleanValue( Form.UPDATE_PARAMS ));
                                 SoapUI.log( "Updating RAML from [" + finalExpUrl + "]");
 
@@ -111,6 +113,9 @@ public class UpdateFromRamlAction extends AbstractSoapUIAction<RestService> {
 
         @AField(name = "RAML Definition", description = "Location or URL of RAML definition", type = AFieldType.FILE)
         public final static String RAML_URL = "RAML Definition";
+
+        @AField(name = "Create Requests", description = "Create sample requests for imported methods", type = AFieldType.BOOLEAN)
+        public final static String CREATE_REQUESTS = "Create Requests";
 
         @AField( name = "Update Parameters", description = "Will update and add new parameter definitions", type = AField.AFieldType.BOOLEAN )
         public final static String UPDATE_PARAMS = "Update Parameters";

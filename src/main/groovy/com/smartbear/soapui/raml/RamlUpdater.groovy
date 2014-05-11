@@ -41,6 +41,8 @@ class RamlUpdater {
     private def baseUriParams = [:]
     private boolean updateParameters
     private UpdateInfo updateInfo;
+    private boolean createSampleRequests
+
 
     public RamlUpdater(WsdlProject project) {
         this.project = project
@@ -183,7 +185,7 @@ class RamlUpdater {
         if (action.responses != null)
             addResponses(method, action.responses)
 
-        if (method.requestCount == 0) {
+        if (method.requestCount == 0 && createSampleRequests) {
             initDefaultRequest(method.addNewRequest("Request 1"))
         }
     }
@@ -215,7 +217,7 @@ class RamlUpdater {
                 }
             }
 
-            if (mt.example != null && method.requestCount == 0 ) {
+            if (mt.example != null && createSampleRequests ) {
                 def request = initDefaultRequest(method.addNewRequest("Sample Request"))
                 request.mediaType = mt.type
                 request.requestContent = mt.example
@@ -342,5 +344,10 @@ class RamlUpdater {
         {
             this.restService = service
         }
+    }
+
+    public void setCreateSampleRequests ( boolean createSampleRequests )
+    {
+        this.createSampleRequests = createSampleRequests;
     }
 }
