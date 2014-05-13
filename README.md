@@ -9,9 +9,9 @@
 
 -> See the [blog-post](http://olensmar.blogspot.se/2013/12/a-raml-apihub-plugin-for-soapui.html) for a detailed overview.
 
-### Usage
+### Download & Install
 
-The plugins are available at [sourceforge](https://sourceforge.net/projects/soapui-plugins/files/soapui-raml-plugin/) -
+The plugin is available at [sourceforge](https://sourceforge.net/projects/soapui-plugins/files/soapui-raml-plugin/) -
 download and unzip them into the SoapUI/bin folder, this will place files in the underlying folders as follows
 (be sure to remove any previous versions of these files):
 
