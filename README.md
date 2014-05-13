@@ -3,6 +3,7 @@
 - Allows you to import RAML files into SoapUI for testing your REST APIs
 - Allows you to generate a REST Mock Service for a RAML file being imported
 - Allows you to udpate an existing REST Service in SoapUI from a RAML file
+- Allows you to generate a RAML file for any REST API defined in SoapUI
 - Allows you to browse the ApiHub directory for APIs with either RAML or Swagger definitions (Swagger requires the
   [soapui-swagger-plugin](https://github.com/olensmar/soapui-swagger-plugin) to be installed also)
 
@@ -59,7 +60,7 @@ but I'm sure there are details I've missed - please let me know if you find anyt
 
 ### Release History
 
-- Version 0.4 - 2014-05-12
+- Version 0.4 - 2014-05-13
   - Added initial "Export RAML" functionality to REST Service popup menu
   - Fixed import of RAML files containing relative includes and multiple request body examples.
   - Added an option do the Import and Update dialogs to enable/disable creation of sample requests.
