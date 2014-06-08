@@ -36,7 +36,7 @@ import com.smartbear.soapui.raml.RamlExporter;
 import java.io.File;
 import java.io.FileWriter;
 
-@ActionConfiguration( actionGroup = "RestServiceActions" )
+@ActionConfiguration( actionGroup = "RestServiceActions", afterAction = "ExportWadlAction", separatorBefore = true )
 public class ExportRamlAction extends AbstractSoapUIAction<RestService>
 {
     private static final String TARGET_PATH = Form.class.getName() + Form.FOLDER;

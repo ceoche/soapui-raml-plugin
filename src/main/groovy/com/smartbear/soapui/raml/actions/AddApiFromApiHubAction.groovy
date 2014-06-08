@@ -40,7 +40,7 @@ import java.awt.*
  * Action that opens a dialog for browsing and adding APIs from the ApiHub directory
  */
 
-@ActionConfiguration( actionGroup = "EnabledWsdlProjectActions" )
+@ActionConfiguration( actionGroup = "EnabledWsdlProjectActions", afterAction = "AddWadlAction", separatorBefore = true )
 class AddApiFromApiHubAction extends AbstractSoapUIAction<WsdlProject> {
 
     private XFormDialog dialog = null

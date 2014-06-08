@@ -42,7 +42,7 @@ import java.io.File;
  * @author Ole Lensmar
  */
 
-@ActionConfiguration( actionGroup = "RestServiceActions" )
+@ActionConfiguration( actionGroup = "RestServiceActions", afterAction = "ExportRamlAction" )
 public class UpdateFromRamlAction extends AbstractSoapUIAction<RestService> {
     private XFormDialog dialog;
 

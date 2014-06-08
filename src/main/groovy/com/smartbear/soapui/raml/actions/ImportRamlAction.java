@@ -43,7 +43,7 @@ import java.io.File;
  * @author Ole Lensmar
  */
 
-@ActionConfiguration( actionGroup = "EnabledWsdlProjectActions" )
+@ActionConfiguration( actionGroup = "EnabledWsdlProjectActions", afterAction = "AddApiFromApiHubAction" )
 public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
     private XFormDialog dialog;
 
@@ -59,7 +59,6 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
         } else {
             dialog.setValue(Form.RAML_URL, "");
         }
-
 
         while (dialog.show()) {
             try {
