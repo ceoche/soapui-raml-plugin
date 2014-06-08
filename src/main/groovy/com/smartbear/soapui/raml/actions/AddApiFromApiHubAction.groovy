@@ -20,6 +20,7 @@ import com.eviware.soapui.SoapUI
 import com.eviware.soapui.impl.rest.RestService
 import com.eviware.soapui.impl.rest.mock.RestMockService
 import com.eviware.soapui.impl.wsdl.WsdlProject
+import com.eviware.soapui.plugins.ActionConfiguration
 import com.eviware.soapui.support.UISupport
 import com.eviware.soapui.support.action.support.AbstractSoapUIAction
 import com.eviware.x.dialogs.Worker
@@ -39,6 +40,7 @@ import java.awt.*
  * Action that opens a dialog for browsing and adding APIs from the ApiHub directory
  */
 
+@ActionConfiguration( actionGroup = "EnabledWsdlProjectActions" )
 class AddApiFromApiHubAction extends AbstractSoapUIAction<WsdlProject> {
 
     private XFormDialog dialog = null

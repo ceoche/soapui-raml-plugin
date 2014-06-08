@@ -19,6 +19,7 @@ package com.smartbear.soapui.raml.actions;
 import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.impl.wsdl.support.PathUtils;
+import com.eviware.soapui.plugins.ActionConfiguration;
 import com.eviware.soapui.support.StringUtils;
 import com.eviware.soapui.support.UISupport;
 import com.eviware.soapui.support.action.support.AbstractSoapUIAction;
@@ -41,6 +42,7 @@ import java.io.File;
  * @author Ole Lensmar
  */
 
+@ActionConfiguration( actionGroup = "RestServiceActions" )
 public class UpdateFromRamlAction extends AbstractSoapUIAction<RestService> {
     private XFormDialog dialog;
 
