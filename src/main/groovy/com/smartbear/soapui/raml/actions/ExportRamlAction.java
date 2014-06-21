@@ -16,6 +16,7 @@
 
 package com.smartbear.soapui.raml.actions;
 
+import com.eviware.soapui.analytics.Analytics;
 import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.impl.rest.RestServiceFactory;
 import com.eviware.soapui.impl.settings.XmlBeansSettingsImpl;
@@ -88,6 +89,7 @@ public class ExportRamlAction extends AbstractSoapUIAction<RestService>
                 UISupport.showInfoMessage("RAML definition has been created at [" + file.getAbsolutePath() + "]");
 
                 settings.setString(TARGET_PATH, dialog.getValue(Form.FOLDER));
+                Analytics.trackAction("ExportRAML");
 
                 break;
             }

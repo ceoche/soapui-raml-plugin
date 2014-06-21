@@ -31,6 +31,7 @@ import org.raml.model.Resource
 import org.raml.model.Response
 import org.raml.model.parameter.AbstractParam
 import org.raml.model.parameter.UriParameter
+import org.raml.parser.tagresolver.ContextPath
 import org.raml.parser.visitor.RamlDocumentBuilder
 
 /**
@@ -62,13 +63,14 @@ class RamlImporter {
 
         Raml raml;
 
+        def builder = new RamlDocumentBuilder()
         if( url.toLowerCase().startsWith("file:"))
         {
             def parent = new File( url.substring(5)).getParentFile().toURI().toURL().toString()
-            raml = new RamlDocumentBuilder().build(new URL(url).openStream(), parent );
+            raml = builder.build(new URL(url).openStream(), parent );
         }
         else {
-            raml = new RamlDocumentBuilder().build(new URL(url).openStream());
+            raml = builder.build(new URL(url).openStream());
         }
 
         def service = createRestService(raml)

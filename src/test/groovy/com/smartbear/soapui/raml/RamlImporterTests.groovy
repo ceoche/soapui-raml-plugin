@@ -20,6 +20,8 @@ import com.eviware.soapui.SoapUI
 import com.eviware.soapui.impl.rest.RestRequestInterface
 import com.eviware.soapui.impl.rest.RestService
 import com.eviware.soapui.impl.rest.mock.RestMockAction
+import com.eviware.soapui.impl.rest.mock.RestMockResponse
+import com.eviware.soapui.impl.rest.mock.RestMockService
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder
 import com.eviware.soapui.impl.wsdl.WsdlProject
 import org.apache.xmlbeans.XmlInteger
@@ -189,7 +191,6 @@ class RamlImporterTests extends GroovyTestCase{
         RestMockAction action = restMock.mockOperationList[0]
 
         assertEquals( "/v1/books", action.resourcePath )
-
     }
 
     public void testNeo4JRaml()
@@ -204,5 +205,19 @@ class RamlImporterTests extends GroovyTestCase{
 
         res = res.getChildResourceByName("/relationships")
         assertNotNull( res )
+    }
+
+    public void testWorldcupRaml()
+    {
+        def service = importRaml( "worldcup/worldcup.raml")
+        RestMockService mock = service.project.restMockServiceList[0]
+
+        assertNotNull( mock )
+
+        RestMockResponse mockResponse = mock.getMockOperationAt( 0 ).getMockResponseAt( 0 )
+        assertNotNull( mockResponse )
+
+        assertTrue( mockResponse.getResponseContent().indexOf( "brazil") > 0 );
+
     }
 }
