@@ -310,8 +310,13 @@ class RamlImporter {
 
             params.each {
                 RestParameter p = it.value
-                if( p.style == ParameterStyle.TEMPLATE && p.defaultValue != null && p.defaultValue.trim().length() > 0 )
-                    path = path.replaceAll( "\\{" + it.key + "\\}", p.defaultValue )
+                if( p.style == ParameterStyle.TEMPLATE )
+                {
+                    if( p.defaultValue != null && p.defaultValue.trim().length() > 0 )
+                        path = path.replaceAll( "\\{" + it.key + "\\}", p.defaultValue )
+                    else
+                        path = path.replaceAll( "\\{" + it.key + "\\}", it.key )
+                }
             }
 
             def mockAction = restMockService.addEmptyMockAction(method.method, path)

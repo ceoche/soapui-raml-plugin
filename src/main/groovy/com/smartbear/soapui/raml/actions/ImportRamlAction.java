@@ -23,7 +23,6 @@ import com.eviware.soapui.impl.rest.mock.RestMockService;
 import com.eviware.soapui.impl.wsdl.WsdlProject;
 import com.eviware.soapui.impl.wsdl.support.PathUtils;
 import com.eviware.soapui.plugins.ActionConfiguration;
-import com.eviware.soapui.plugins.auto.AutoImportMethod;
 import com.eviware.soapui.support.StringUtils;
 import com.eviware.soapui.support.UISupport;
 import com.eviware.soapui.support.action.support.AbstractSoapUIAction;
@@ -95,6 +94,9 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
 
         @AField( name = "Generate MockService", description = "Generate a REST Mock Service from the RAML definition", type = AField.AFieldType.BOOLEAN )
         public final static String GENERATE_MOCK = "Generate MockService";
+
+        @AField( name = "Generate TestSuite", description = "Generate a skeleton TestSuite for the created REST API", type = AField.AFieldType.BOOLEAN )
+        public final static String GENERATE_TESTSUITE = "Generate TestSuite";
     }
 
 }
