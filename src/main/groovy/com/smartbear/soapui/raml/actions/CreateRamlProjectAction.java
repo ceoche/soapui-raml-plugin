@@ -29,7 +29,7 @@ public class CreateRamlProjectAction extends AbstractSoapUIAction<WorkspaceImpl>
 
     public CreateRamlProjectAction()
     {
-        super( "Create RAML Project", "Creates a new SoapUI Project from a RAML file");
+        super( "Create RAML Project", "Creates a new SoapUI Project from a RAML definition");
     }
 
     @Override
@@ -97,7 +97,7 @@ public class CreateRamlProjectAction extends AbstractSoapUIAction<WorkspaceImpl>
         }
     }
 
-    @AForm(name = "Create RAML Project", description = "Creates a REST Project from the specified RAML definition")
+    @AForm(name = "Create RAML Project", description = "Creates a SoapUI Project from the specified RAML definition")
     public interface Form {
         @AField(name = "Project Name", description = "Name of the project", type = AField.AFieldType.STRING)
         public final static String PROJECT_NAME = "Project Name";

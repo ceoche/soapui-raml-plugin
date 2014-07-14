@@ -105,6 +105,7 @@ class RamlImporterTests extends GroovyTestCase{
         WsdlProject project = new WsdlProject()
         RamlImporter importer = new RamlImporter( project )
         importer.setRestMockService( project.addNewRestMockService( "TestRESTMock"))
+        importer.setCreateSampleRequests( true )
 
         String uri = new File( "src/test/resources/" + path ).toURI().toURL().toString();
         return importer.importRaml( uri );

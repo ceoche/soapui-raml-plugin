@@ -146,13 +146,12 @@ class RamlImporter {
         def params = extractUriParams(r.uri, r.uriParameters )
         params.putAll(baseUriParams)
         params.each {
-            def p = addParamFromNamedProperty(resource.params, ParameterStyle.TEMPLATE, it.key, it.value )
+            addParamFromNamedProperty(resource.params, ParameterStyle.TEMPLATE, it.key, it.value )
+        }
 
-            // workaround for bug in SoapUI 4.6.X
-            if (p.style == ParameterStyle.TEMPLATE &&
-                    resource.service.basePath.contains("{" + p.name + "}")) {
-                resource.path = resource.path.replaceAll("\\{" + p.name + "\\}", "")
-            }
+        // workaround for bug in SoapUI that adds template parameters to path
+        baseUriParams.each {
+            resource.path = resource.path.replaceAll( "\\{" + it.key + "\\}", "");
         }
 
         r.actions.each {

@@ -98,5 +98,4 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
         @AField( name = "Generate TestSuite", description = "Generate a skeleton TestSuite for the created REST API", type = AField.AFieldType.BOOLEAN )
         public final static String GENERATE_TESTSUITE = "Generate TestSuite";
     }
-
 }
