@@ -44,14 +44,14 @@ public class RamlImporterWorker extends Worker.WorkerAdapter {
 
             if( dialog.getBooleanValue( CreateRamlProjectAction.Form.GENERATE_MOCK ))
             {
-                mockService = project.addNewRestMockService( "Generated MockService" );
+                mockService = project.addNewRestMockService( "Generated Virt" );
                 importer.setRestMockService( mockService );
             }
 
             RestService restService = importer.importRaml(finalExpUrl);
 
             if( mockService != null )
-                mockService.setName( restService.getName() + " MockService" );
+                mockService.setName( restService.getName() + " Virt" );
 
             if( dialog.getBooleanValue( CreateRamlProjectAction.Form.GENERATE_TESTSUITE))
             {

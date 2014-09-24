@@ -92,8 +92,8 @@ public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
         @AField(name = "Create Requests", description = "Create sample requests for imported methods", type = AFieldType.BOOLEAN)
         public final static String CREATE_REQUESTS = "Create Requests";
 
-        @AField( name = "Generate MockService", description = "Generate a REST Mock Service from the RAML definition", type = AField.AFieldType.BOOLEAN )
-        public final static String GENERATE_MOCK = "Generate MockService";
+        @AField( name = "Generate Virt", description = "Generate a REST Mock Service from the RAML definition", type = AField.AFieldType.BOOLEAN )
+        public final static String GENERATE_MOCK = "Generate Virt";
 
         @AField( name = "Generate TestSuite", description = "Generate a skeleton TestSuite for the created REST API", type = AField.AFieldType.BOOLEAN )
         public final static String GENERATE_TESTSUITE = "Generate TestSuite";

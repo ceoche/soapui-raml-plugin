@@ -113,20 +113,21 @@ class AddApiFromApiHubAction extends AbstractSoapUIAction<WsdlProject> {
                 try {
                     // create the importer and import!
                     RamlImporter importer = new RamlImporter( project );
+                    importer.createSampleRequests = true
                     SoapUI.log( "Importing RAML from [" + api.specs.RAML.url + "]")
 
                     RestMockService mockService = null;
 
                     if( dialog.getBooleanValue( AddApiFromApiHubForm.GENERATE_MOCK ))
                     {
-                        mockService = project.addNewRestMockService( "Generated MockService" );
+                        mockService = project.addNewRestMockService( "Generated Virt" );
                         importer.setRestMockService( mockService );
                     }
 
                     RestService restService = importer.importRaml(api.specs.RAML.url);
 
                     if( mockService != null )
-                        mockService.setName( restService.getName() + " MockService" );
+                        mockService.setName( restService.getName() + " Virt" );
 
                     UISupport.select( restService );
                 }

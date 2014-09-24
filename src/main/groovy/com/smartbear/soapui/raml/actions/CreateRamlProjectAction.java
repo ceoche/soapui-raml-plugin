@@ -97,7 +97,7 @@ public class CreateRamlProjectAction extends AbstractSoapUIAction<WorkspaceImpl>
         }
     }
 
-    @AForm(name = "Create RAML Project", description = "Creates a SoapUI Project from the specified RAML definition")
+    @AForm(name = "Create RAML Project", description = "Creates a Project from the specified RAML definition")
     public interface Form {
         @AField(name = "Project Name", description = "Name of the project", type = AField.AFieldType.STRING)
         public final static String PROJECT_NAME = "Project Name";
@@ -108,8 +108,8 @@ public class CreateRamlProjectAction extends AbstractSoapUIAction<WorkspaceImpl>
         @AField(name = "Create Requests", description = "Create sample requests for imported methods", type = AField.AFieldType.BOOLEAN)
         public final static String CREATE_REQUESTS = "Create Requests";
 
-        @AField( name = "Generate MockService", description = "Generate a REST Mock Service from the RAML definition", type = AField.AFieldType.BOOLEAN )
-        public final static String GENERATE_MOCK = "Generate MockService";
+        @AField( name = "Generate Virt", description = "Generate a REST Virt from the RAML definition", type = AField.AFieldType.BOOLEAN )
+        public final static String GENERATE_MOCK = "Generate Virt";
 
         @AField( name = "Generate TestSuite", description = "Generate a skeleton TestSuite for the created REST API", type = AField.AFieldType.BOOLEAN )
         public final static String GENERATE_TESTSUITE = "Generate TestSuite";
