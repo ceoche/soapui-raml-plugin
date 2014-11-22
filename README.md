@@ -11,28 +11,8 @@
 
 ### Download & Install
 
-The plugins are available at [sourceforge](https://sourceforge.net/projects/soapui-plugins/files/) -
-download and unzip them into the SoapUI/bin folder, this will place files in the underlying folders as follows
-(be sure to remove any previous versions of these files):
-
-```
-/soapui
-   /bin
-      /ext
-         snakeyaml-1.13.jar (from the raml plugin)
-         raml-parser-0.9-SNAPSHOT.jar (from the raml plugin)
-         swagger4j-1.0-beta3.jar  (from the swagger plugin)
-         Javax.json.1.0-b06.jar  (from the swagger plugin)
-      /plugins
-         soapui-raml-plugin-0.4-plugin.jar  (from the raml plugin)
-         soapui-swagger-plugin-0.3-plugin.jar (from the swagger plugin)
-```
-
-(Re)Start SoapUI and create an empty project, you should have the following menu options on the project-popup menu:
-- Import RAML Definition; prompts to import a RAML file
-- Add API from ApiHub; allows you to browse APIs at ApiHub and import them into SoapUI.
-
-Note: the 0.3 version of the plugin requires SoapUI 5.0 or later (for the REST Mock generation)
+As of the latest 1.2 version the plugin is only available via the Plugin Repository / Plugin Manager button in top 
+toolbars of either SoapUI Pro 5.1+ or Ready! API 1.0+
 
 ### Build it yourself
 
@@ -41,9 +21,6 @@ Clone the Git repository, make sure you have maven installed, and run
 ```
 mvn clean install assembly:single
 ```
-
-to get the same zip as found on [sourceforge](https://sourceforge.net/projects/soapui-plugins/files/soapui-raml-plugin/)
-
 ### Features and shortcomings
 
 The RAML importer supports most constructs in the [RAML 0.8 specification](http://raml.org/spec.html), including
@@ -60,6 +37,10 @@ but I'm sure there are details I've missed - please let me know if you find anyt
 
 ### Release History
 
+- Version 1.2 - 2014-11-21 
+  - embedded updated swagger plugin to avoid runtime dependencey
+  - embedded 3rd party libraries so only one distributable file is needed
+  - improved error handling and messages
 - Version 0.4 - 2014-05-13
   - Added initial "Export RAML" functionality to REST Service popup menu
   - Fixed import of RAML files containing relative includes and multiple request body examples.

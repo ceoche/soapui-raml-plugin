@@ -30,6 +30,8 @@ import com.eviware.x.form.support.ADialogBuilder
 import com.smartbear.restplugin.SwaggerImporter
 import com.smartbear.soapui.apihub.ApiHubApi
 import com.smartbear.soapui.raml.RamlImporter
+import com.smartbear.swagger.SwaggerImporter
+import com.smartbear.swagger.SwaggerUtils
 
 import javax.swing.*
 import javax.swing.event.ListSelectionEvent
@@ -133,13 +135,14 @@ class AddApiFromApiHubAction extends AbstractSoapUIAction<WsdlProject> {
                 }
                 catch( Throwable e )
                 {
+                    UISupport.showErrorMessage( "Failed to import RAML Definition: " + e )
                     SoapUI.logError( e )
                 }
             }
             else if( api.specs.swagger != null )
             {
                 try {
-                    SwaggerImporter importer = new SwaggerImporter( project );
+                    SwaggerImporter importer = SwaggerUtils.createSwaggerImporter( api.specs.swagger.url, project  )
                     SoapUI.log( "Importing Swagger from [" + api.specs.swagger.url + "]")
 
                     def result = importer.importSwagger( api.specs.swagger.url )
@@ -149,6 +152,7 @@ class AddApiFromApiHubAction extends AbstractSoapUIAction<WsdlProject> {
                 }
                 catch( Throwable e )
                 {
+                    ISupport.showErrorMessage( "Failed to import Swagger Definition: " + e )
                     SoapUI.logError( e )
                 }
             }
@@ -157,45 +161,44 @@ class AddApiFromApiHubAction extends AbstractSoapUIAction<WsdlProject> {
 
     def initEntries() {
 
-        boolean hasSwagger = false
-
         try {
-            SoapUI.getSoapUICore().getExtensionClassLoader().loadClass( "com.smartbear.restplugin.SwaggerImporter" );
-            hasSwagger = true
-        } catch( ClassNotFoundException e ) {
-            SoapUI.logError( e )
-        }
+            ApiHubApi api = new ApiHubApi()
+            def apis = api.getAllApis( "" )
+            apis.each {
 
-        ApiHubApi api = new ApiHubApi()
-        def apis = api.getAllApis( "" )
-        apis.each {
-
-            if( hasSwagger || (it.specs != null && it.specs.RAML != null && it.specs.RAML.url != null ))
-            {
-                def title = it.title + " ["
-
-                if( it.specs != null )
+                if( it.specs != null && it.specs.RAML != null && it.specs.RAML.url != null )
                 {
-                    def hasRaml = false
-                    if( it.specs.RAML != null && it.specs.RAML.url != null )
+                    def title = it.title + " ["
+
+                    if( it.specs != null )
                     {
-                        title += "RAML"
-                        hasRaml = true
+                        def hasRaml = false
+                        if( it.specs.RAML != null && it.specs.RAML.url != null )
+                        {
+                            title += "RAML"
+                            hasRaml = true
+                        }
+
+                        if( it.specs.swagger != null && it.specs.swagger.url != null )
+                        {
+                            if( hasRaml )
+                                title += ","
+
+                            title += "Swagger"
+                        }
                     }
 
-                    if( hasSwagger && it.specs.swagger != null && it.specs.swagger.url != null )
-                    {
-                        if( hasRaml )
-                            title += ","
-                        title += "swagger"
-                    }
+                    title += "]"
+
+                    apiEntryList.add( title )
+                    apiEntries[title] = it
                 }
-
-                title += "]"
-
-                apiEntryList.add( title )
-                apiEntries[title] = it
             }
+
+        }
+        catch( Throwable t ){
+            SoapUI.logError( t )
+            ISupport.showErrorMessage( "Failed to get listing of APIs:" + t )
         }
     }
 
