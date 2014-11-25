@@ -220,6 +220,8 @@ class RamlImporter {
                 }
             }
 
+            rep.sampleContent = mt.example
+
             if (mt.example != null && createSampleRequests ) {
                 def request = initDefaultRequest( method.addNewRequest("Sample Request"))
                 request.mediaType = mt.type
@@ -300,6 +302,7 @@ class RamlImporter {
                 }
 
                 representation.description = r.description
+                representation.sampleContent = mt.example
             }
         }
 
