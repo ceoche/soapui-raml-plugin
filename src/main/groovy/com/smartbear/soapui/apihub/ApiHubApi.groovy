@@ -65,7 +65,7 @@ class ApiHubApi {
         }
 
         result.sort(){ a,b->
-            a.title.compareTo( b.title )
+            a.title.toLowerCase().compareTo( b.title.toLowerCase() )
         }
 
         return result
