@@ -30,9 +30,6 @@ public interface AddApiFromApiHubForm {
     @AField(description = "API Description", type = AField.AFieldType.INFORMATION)
     public final static String DESCRIPTION = "Description";
 
-    @AField( name = "Generate Virt", description = "Generate a REST Virt (RAML only)", type = AField.AFieldType.BOOLEAN )
-    public final static String GENERATE_MOCK = "Generate Virt";
-
     @AField(description = "API Definition", type = AField.AFieldType.LABEL)
     public final static String SPEC = "Definition";
 }

@@ -31,6 +31,8 @@ import org.raml.model.Resource
 import org.raml.model.Response
 import org.raml.model.parameter.AbstractParam
 import org.raml.model.parameter.UriParameter
+import org.raml.parser.loader.DefaultResourceLoader
+import org.raml.parser.loader.FileResourceLoader
 import org.raml.parser.tagresolver.ContextPath
 import org.raml.parser.visitor.RamlDocumentBuilder
 
@@ -60,6 +62,7 @@ class RamlImporter {
     }
 
     public RestService importRaml(String url) {
+
 
         Raml raml;
 

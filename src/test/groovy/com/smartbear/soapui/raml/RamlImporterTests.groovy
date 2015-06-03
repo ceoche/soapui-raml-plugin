@@ -219,6 +219,18 @@ class RamlImporterTests extends GroovyTestCase{
         assertNotNull( mockResponse )
 
         assertTrue( mockResponse.getResponseContent().indexOf( "brazil") > 0 );
+    }
 
+    public void testDarsRaml()
+    {
+        def service = importRaml( "dars/DARS.raml")
+        RestMockService mock = service.project.restMockServiceList[0]
+
+        assertNotNull( mock )
+
+        RestMockResponse mockResponse = mock.getMockOperationAt( 0 ).getMockResponseAt( 0 )
+        assertNotNull( mockResponse )
+
+        assertTrue( mockResponse.getResponseContent().indexOf( "brazil") > 0 );
     }
 }
