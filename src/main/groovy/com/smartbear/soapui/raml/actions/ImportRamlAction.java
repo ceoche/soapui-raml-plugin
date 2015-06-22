@@ -44,7 +44,7 @@ import java.io.File;
  * @author Ole Lensmar
  */
 
-@ActionConfiguration( actionGroup = "EnabledWsdlProjectActions", afterAction = "AddApiFromApiHubAction" )
+@ActionConfiguration( actionGroup = "EnabledWsdlProjectActions", afterAction = "AddWadlAction" )
 public class ImportRamlAction extends AbstractSoapUIAction<WsdlProject> {
     private XFormDialog dialog;
 

@@ -5,7 +5,6 @@ import com.eviware.soapui.model.iface.Interface;
 import com.eviware.soapui.model.project.Project;
 import com.eviware.soapui.plugins.ApiImporter;
 import com.eviware.soapui.plugins.PluginApiImporter;
-import com.smartbear.soapui.raml.actions.AddApiFromApiHubAction;
 import com.smartbear.soapui.raml.actions.ImportRamlAction;
 
 import java.util.ArrayList;
