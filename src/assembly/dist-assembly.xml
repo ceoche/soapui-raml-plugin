@@ -13,9 +13,6 @@
                 <include>org.yaml:snakeyaml</include>
                 <include>com.googlecode.juniversalchardet:juniversalchardet</include>
                 <include>org.glassfish:javax.json</include>
-                <include>com.smartbear:swagger4j</include>
-                <include>com.wordnik:swagger-core</include>
-                <include>com.wordnik:swagger-models</include>
             </includes>
         </dependencySet>
         <dependencySet>
@@ -23,14 +20,7 @@
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>com.smartbear:soapui-raml-plugin</include>
-                <include>com.smartbear:soapui-swagger-plugin</include>
             </includes>
-            <unpackOptions>
-                <excludes>
-                    <exclude>com\smartbear\swagger\PluginConfig.class</exclude>
-                    <exclude>com\smartbear\swagger\*Action*.class</exclude>
-                </excludes>
-            </unpackOptions>
         </dependencySet>
     </dependencySets>
     <fileSets>
