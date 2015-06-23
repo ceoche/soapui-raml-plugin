@@ -4,14 +4,13 @@
 - Allows you to generate a REST Mock Service for a RAML file being imported
 - Allows you to udpate an existing REST Service in SoapUI from a RAML file
 - Allows you to generate a RAML file for any REST API defined in SoapUI
-- Allows you to browse the ApiHub directory for APIs with either RAML or Swagger definitions (Swagger requires the
-  [soapui-swagger-plugin](https://github.com/olensmar/soapui-swagger-plugin) to be installed also)
+
 
 -> See the [blog-post](http://olensmar.blogspot.se/2013/12/a-raml-apihub-plugin-for-soapui.html) for a detailed overview.
 
 ### Download & Install
 
-As of the latest 1.2 version the plugin is only available via the Plugin Repository / Plugin Manager button in top 
+As of the 1.2 version the plugin is only available via the Plugin Repository / Plugin Manager button in top 
 toolbars of either SoapUI Pro 5.1+ or Ready! API 1.0+
 
 ### Build it yourself
@@ -36,7 +35,12 @@ I've tested this with a number of RAML files (see src/test/resources and the Ram
 but I'm sure there are details I've missed - please let me know if you find anything strange or unexpected.
 
 ### Release History
-
+- Version 1.3.1 - June 2015
+  - Updated raml-parser dependency for latest fixes
+  - Removed “Update from RAML definition” option (since REST refactoring is now in R!A 1.3)
+  - Removed the functionality related to APIHub (due to APIHub retirement)
+- Version 1.3
+  - added support for ApiImporter Plugin Interface and saving of example requests/responses to RestRepresentaiton sampleContent
 - Version 1.2 - 2014-11-21 
   - embedded updated swagger plugin to avoid runtime dependencey
   - embedded 3rd party libraries so only one distributable file is needed
