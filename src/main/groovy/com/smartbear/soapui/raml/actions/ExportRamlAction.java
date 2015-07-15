@@ -66,13 +66,14 @@ public class ExportRamlAction extends AbstractSoapUIAction<RestService>
             dialog.setValue(Form.BASEURI, restService.getBasePath());
             dialog.setValue(Form.FOLDER, settings.getString(TARGET_PATH, ""));
             dialog.setValue(Form.VERSION, settings.getString(VERSION, "" ));
+            dialog.setValue(Form.DEFAULTMEDIATYPE, "application/json");
         }
 
         while( dialog.show() )
         {
             try
             {
-                RamlExporter exporter = new RamlExporter( restService.getProject() );
+                RamlExporter exporter = new RamlExporter( restService.getProject(), dialog.getValue(Form.DEFAULTMEDIATYPE) );
 
                 exporter.setCreateSampleBodies( dialog.getBooleanValue( Form.CREATE_SAMPLE_BODIES));
                 String raml = exporter.createRaml( dialog.getValue(Form.TITLE), restService,
@@ -114,6 +115,9 @@ public class ExportRamlAction extends AbstractSoapUIAction<RestService>
 
         @AField( name = "Version", description = "The default version if a {version} uri parameter is in the baseUri", type = AField.AFieldType.STRING )
         public final static String VERSION = "Version";
+
+        @AField(name = "Default Media Type", description = "Default Media Type of the responses", type = AField.AFieldType.STRING)
+        public final static String DEFAULTMEDIATYPE = "Default Media Type";
 
         @AField(name = "Create Sample Bodies", description = "Create sample request/response bodies from existing requests", type = AField.AFieldType.BOOLEAN)
         public final static String CREATE_SAMPLE_BODIES = "Create Sample Bodies";

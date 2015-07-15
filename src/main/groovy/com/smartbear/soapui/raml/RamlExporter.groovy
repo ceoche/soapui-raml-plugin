@@ -40,10 +40,16 @@ import org.raml.model.parameter.UriParameter
 class RamlExporter {
 
     private final WsdlProject project
+    private final String defaultMediaType
     private boolean createSampleBodies
 
-    public RamlExporter( WsdlProject project ) {
+    public RamlExporter( WsdlProject project, String defaultMediaType ) {
         this.project = project
+        this.defaultMediaType = defaultMediaType
+    }
+
+    public RamlExporter( WsdlProject project ) {
+        this(project, "application/json")
     }
 
     String createRaml(String title, RestService service, String baseUri, String version ) {
@@ -163,17 +169,19 @@ class RamlExporter {
 
         restMethod.representations.each {
 
+            def mediaType = hasContent(it.mediaType) ? it.mediaType : defaultMediaType
+
             if( it.type == RestRepresentation.Type.REQUEST && (
                 restMethod.method == RestRequestInterface.HttpMethod.POST ||
                 restMethod.method == RestRequestInterface.HttpMethod.PUT ))
             {
-                if( hasContent(it.mediaType)) {
-                    result.body.put(it.mediaType, new MimeType())
+                if( hasContent(mediaType)) {
+                    result.body.put(mediaType, new MimeType())
 
                     if( createSampleBodies )
                     {
                         restMethod.requestList.each {
-                            def mimeType = result.body.get( it.mediaType )
+                            def mimeType = result.body.get( mediaType )
                             if( mimeType != null && !hasContent(mimeType.example) && hasContent( it.requestContent ))
                             {
                                 mimeType.example = it.requestContent
@@ -184,10 +192,10 @@ class RamlExporter {
             }
             else if( it.type == RestRepresentation.Type.RESPONSE || it.type == RestRepresentation.Type.FAULT )
             {
-                if( hasContent( it.mediaType )) {
+                if( hasContent( mediaType )) {
                     Response response = new Response()
                     response.body = new HashMap<String, MimeType>()
-                    response.body.put(it.mediaType, new MimeType())
+                    response.body.put(mediaType, new MimeType())
 
                     it.status.each {
                         int statusCode = it
