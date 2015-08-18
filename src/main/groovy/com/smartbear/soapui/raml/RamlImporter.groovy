@@ -73,7 +73,7 @@ class RamlImporter {
             raml = builder.build(new URL(url).openStream(), parent );
         }
         else {
-            raml = builder.build(new URL(url).openStream());
+            raml = builder.build(url);
         }
 
         def service = createRestService(raml)

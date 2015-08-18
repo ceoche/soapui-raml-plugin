@@ -107,7 +107,7 @@ class RamlImporterTests extends GroovyTestCase{
         importer.setRestMockService( project.addNewRestMockService( "TestRESTMock"))
         importer.setCreateSampleRequests( true )
 
-        String uri = new File( "src/test/resources/" + path ).toURI().toURL().toString();
+        String uri = path.startsWith( 'http' ) ? path : new File( "src/test/resources/" + path ).toURI().toURL().toString();
         return importer.importRaml( uri );
     }
 
