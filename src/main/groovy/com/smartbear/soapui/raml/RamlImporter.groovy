@@ -68,7 +68,7 @@ class RamlImporter {
             raml = new RamlDocumentBuilder().build(new URL(url).openStream(), parent );
         }
         else {
-            raml = new RamlDocumentBuilder().build(new URL(url).openStream());
+            raml = new RamlDocumentBuilder().build(url);
         }
 
         def service = createRestService(raml)
