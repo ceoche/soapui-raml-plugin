@@ -54,8 +54,18 @@ class RamlUpdater {
     }
 
     public synchronized UpdateInfo updateFromRaml(RestService service, String url) {
-        Raml raml = new RamlDocumentBuilder().build(new URL(url).openStream());
-        updateInfo = new UpdateInfo( service );
+       Raml raml;
+
+       if( url.toLowerCase().startsWith("file:"))
+       {
+           def parent = new File( url.substring(5)).getParentFile().toURI().toURL().toString()
+           raml = new RamlDocumentBuilder().build(new URL(url).openStream(), parent );
+       }
+       else {
+           raml = new RamlDocumentBuilder().build(url);
+       }
+       
+       updateInfo = new UpdateInfo( service );
 
         baseUriParams = extractUriParams(raml.baseUri, raml.baseUriParameters)
         if (baseUriParams.version != null)

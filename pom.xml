@@ -10,7 +10,7 @@
 
     <groupId>com.smartbear</groupId>
     <artifactId>soapui-raml-plugin</artifactId>
-    <version>0.4-plugin</version>
+    <version>0.4-avancial-fixed</version>
 
     <repositories>
         <repository>
@@ -45,7 +45,6 @@
             <version>2.0.5</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
@@ -55,7 +54,7 @@
         <dependency>
             <groupId>com.smartbear</groupId>
             <artifactId>swagger4j</artifactId>
-            <version>1.0-beta3</version>
+            <version>1.0-beta4</version>
         </dependency>
 
         <dependency>
@@ -225,9 +224,9 @@
     </build>
 
     <scm>
-        <connection>scm:git:git://github.com:olensmar/soapui-raml-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:olensmar/soapui-raml-plugin.git</developerConnection>
-        <url>http://github.com/olensmar/soapui-raml-plugin</url>
+        <connection>scm:git:git@github.com:ceoche/soapui-raml-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:ceoche/soapui-raml-plugin.git</developerConnection>
+        <url>https://github.com/ceoche/soapui-raml-plugin</url>
         <tag>HEAD</tag>
     </scm>
 
